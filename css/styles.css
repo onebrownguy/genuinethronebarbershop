@@ -401,11 +401,17 @@ section { padding: 80px 48px; }
 .gallery-section { background: var(--black-soft); padding: 80px 0; }
 .gallery-inner   { max-width: var(--max-width); margin: 0 auto; padding: 0 48px; }
 .gallery-grid {
-  display: grid; grid-template-columns: 2fr 1fr 1fr;
-  grid-template-rows: 280px 280px; gap: 4px; margin-top: 48px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-auto-rows: 290px;
+  gap: 4px; margin-top: 48px;
 }
 .gallery-item { overflow: hidden; position: relative; }
-.gallery-item:first-child { grid-row: span 2; }
+
+/* Layout modifiers */
+.gallery-hero { grid-row: span 2; }           /* tall feature — gallery-1    */
+.gallery-full { grid-column: 1 / -1; }        /* full-width row — shop-wide  */
+.gallery-wide { grid-column: span 2; }        /* 2-col span — chairs-row, social */
 .gallery-img {
   width: 100%; height: 100%; object-fit: cover;
   transition: transform 0.5s ease, filter 0.4s ease;
@@ -740,8 +746,8 @@ footer {
   .about-images { height: 380px; }
   .barbers-grid { grid-template-columns: repeat(2, 1fr); }
   .services-grid { grid-template-columns: repeat(2, 1fr); }
-  .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 220px 220px; }
-  .gallery-item:first-child { grid-row: span 1; }
+  .gallery-grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 220px; }
+  .gallery-hero, .gallery-full, .gallery-wide { grid-row: span 1; grid-column: span 1; }
   .reviews-grid { grid-template-columns: repeat(2, 1fr); }
   .reviews-bar { gap: 16px; }
   .rating-sep { display: none; }
@@ -778,8 +784,8 @@ footer {
   .barbers-header .btn-outline { width: 100%; text-align: center; }
   .services-grid { grid-template-columns: 1fr; }
   .gallery-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
-  .gallery-item { height: 240px; }
-  .gallery-item:first-child { grid-row: span 1; height: 280px; }
+  .gallery-item { height: 220px; }
+  .gallery-hero, .gallery-full, .gallery-wide { grid-row: span 1; grid-column: span 1; height: 220px; }
   .reviews-grid { grid-template-columns: 1fr; }
   .reviews-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
   .rating-big { font-size: 72px; }
