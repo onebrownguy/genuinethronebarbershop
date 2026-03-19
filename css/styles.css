@@ -4,12 +4,7 @@
    ============================================================ */
 
 /* ── FONTS ── */
-@font-face {
-  font-family: 'FS Meridian';
-  font-weight: 700;
-  font-style: normal;
-  src: local('FS Meridian Bold'), local('FSMeridian-Bold'), local('FS-Meridian-Bold');
-}
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
 /* ── DESIGN TOKENS ── */
 :root {
@@ -34,7 +29,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--black);
   color: var(--white);
-  font-family: 'FS Meridian', 'Barlow', sans-serif;
+  font-family: 'Jost', 'Barlow', sans-serif;
   overflow-x: hidden;
 }
 
@@ -73,13 +68,13 @@ nav {
 }
 .nav-brand span {
   display: block; font-size: 10px; letter-spacing: 5px;
-  color: var(--gold); font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  color: var(--gold); font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 600;
 }
 .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
 .nav-links a {
   text-decoration: none;
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 600; font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
   color: rgba(255,255,255,0.7); transition: color var(--transition-fast);
 }
@@ -177,7 +172,7 @@ nav {
   50%       { transform: translateY(-8px); }
 }
 .hero-eyebrow {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 600; font-size: 11px; letter-spacing: 7px;
   text-transform: uppercase; color: var(--gold);
 }
@@ -187,7 +182,7 @@ nav {
 }
 .hero-title span { color: var(--green); }
 .hero-sub {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 16px; letter-spacing: 2px;
   color: rgba(255,255,255,0.55); max-width: 460px; line-height: 1.5;
 }
@@ -203,7 +198,7 @@ nav {
   color: var(--green); line-height: 1;
 }
 .stat-label {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
   color: var(--gray); margin-top: 3px;
 }
@@ -230,7 +225,7 @@ nav {
    ============================================================ */
 section { padding: 80px 48px; }
 .section-label {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 11px; letter-spacing: 8px; text-transform: uppercase;
   color: var(--gold); margin-bottom: 14px;
 }
@@ -288,7 +283,7 @@ section { padding: 80px 48px; }
 .pillar:hover { border-color: rgba(154,205,50,0.28); background: rgba(154,205,50,0.06); }
 .pillar-icon { font-size: 20px; margin-bottom: 7px; }
 .pillar-title {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 700; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--green); margin-bottom: 5px;
 }
@@ -329,7 +324,7 @@ section { padding: 80px 48px; }
   display: flex; flex-direction: column; justify-content: flex-end; padding: 22px 18px;
 }
 .barber-tag {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
   color: var(--gold); margin-bottom: 3px;
 }
@@ -338,14 +333,14 @@ section { padding: 80px 48px; }
   letter-spacing: 2px; color: var(--white); line-height: 1;
 }
 .barber-specialty {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--green); margin-top: 3px;
 }
 .barber-reviews { display: flex; align-items: center; gap: 7px; margin-top: 8px; }
 .barber-stars   { color: var(--gold); font-size: 11px; }
 .barber-count   {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 11px; color: rgba(255,255,255,0.35);
 }
 .barber-book-btn {
@@ -391,7 +386,7 @@ section { padding: 80px 48px; }
   margin-bottom: 18px; position: relative;
 }
 .service-price {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 700; font-size: 20px; color: var(--green);
 }
 
@@ -422,7 +417,7 @@ section { padding: 80px 48px; }
   position: absolute; bottom: 0; left: 0; right: 0;
   background: linear-gradient(to top, rgba(0,0,0,0.88), transparent);
   padding: 18px 16px 12px;
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
   color: rgba(255,255,255,0.65);
   opacity: 0; transform: translateY(5px); transition: all var(--transition-med);
@@ -437,13 +432,13 @@ section { padding: 80px 48px; }
   letter-spacing: 3px; color: var(--green);
 }
 .social-handle {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 12px; letter-spacing: 3px; color: rgba(255,255,255,0.35);
 }
 .social-links { display: flex; gap: 10px; margin-top: 8px; }
 .social-link {
   color: var(--green); font-size: 13px;
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   letter-spacing: 2px; text-decoration: none;
   border: 1px solid rgba(154,205,50,0.3); padding: 7px 14px;
   transition: all var(--transition-fast);
@@ -461,7 +456,7 @@ section { padding: 80px 48px; }
 .rating-details { display: flex; flex-direction: column; gap: 5px; }
 .rating-stars { font-size: 26px; color: var(--gold); letter-spacing: 3px; }
 .rating-count {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
   color: rgba(255,255,255,0.35);
 }
@@ -469,7 +464,7 @@ section { padding: 80px 48px; }
 .rating-breakdown { display: flex; flex-direction: column; gap: 5px; }
 .brow {
   display: flex; align-items: center; gap: 9px;
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.35);
 }
 .brow-bar { width: 110px; height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
@@ -493,13 +488,13 @@ section { padding: 80px 48px; }
 }
 .review-footer { display: flex; justify-content: space-between; align-items: center; }
 .review-author {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 700; font-size: 12px; letter-spacing: 2px;
   text-transform: uppercase; color: var(--green);
 }
 .review-platform {
   font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.2);
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
 }
 
 /* ============================================================
@@ -510,7 +505,7 @@ section { padding: 80px 48px; }
 .faq-item    { border-bottom: 1px solid rgba(255,255,255,0.07); }
 .faq-q {
   width: 100%; background: none; border: none; color: var(--white);
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 700; font-size: 17px; letter-spacing: 1px; text-align: left;
   padding: 20px 0; cursor: pointer;
   display: flex; justify-content: space-between; align-items: center; gap: 16px;
@@ -536,7 +531,7 @@ section { padding: 80px 48px; }
 /* Map */
 .map-section { margin-top: 48px; }
 .map-address {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
   color: rgba(255,255,255,0.4); margin-bottom: 14px;
 }
@@ -585,7 +580,7 @@ section { padding: 80px 48px; }
 }
 .perk-icon { font-size: 24px; margin-bottom: 10px; }
 .perk-title {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 700; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--green); margin-bottom: 8px;
 }
@@ -600,7 +595,7 @@ section { padding: 80px 48px; }
   letter-spacing: 3px; color: var(--white); margin-bottom: 5px;
 }
 .join-cta-sub {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 13px; letter-spacing: 2px; color: rgba(255,255,255,0.35);
 }
 .join-cta-btns { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -626,19 +621,19 @@ section { padding: 80px 48px; }
 }
 .cta-title span { color: var(--green); }
 .cta-eyebrow {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 11px; letter-spacing: 8px; text-transform: uppercase;
   color: var(--gold); margin-bottom: 18px;
 }
 .cta-sub {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 15px; letter-spacing: 3px; text-transform: uppercase;
   color: rgba(255,255,255,0.45); margin-bottom: 40px;
 }
 .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 .cta-hours {
   margin-top: 28px;
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 12px; letter-spacing: 4px; color: rgba(255,255,255,0.2);
 }
 
@@ -672,7 +667,7 @@ footer {
   letter-spacing: 4px; color: var(--green); margin-bottom: 4px;
 }
 .footer-brand-sub {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 10px; letter-spacing: 6px; text-transform: uppercase;
   color: var(--gold); margin-bottom: 14px;
 }
@@ -684,13 +679,13 @@ footer {
 .footer-social-btn {
   width: 34px; height: 34px; border: 1px solid rgba(154,205,50,0.18);
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-size: 12px; font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 700; color: rgba(255,255,255,0.35); text-decoration: none;
   transition: all var(--transition-fast);
 }
 .footer-social-btn:hover { border-color: var(--green); color: var(--green); }
 .footer-col-title {
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 700; font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
   color: var(--green); margin-bottom: 18px;
 }
@@ -702,7 +697,7 @@ footer {
 .footer-links a:hover { color: var(--green); }
 .footer-info strong {
   color: rgba(255,255,255,0.5); display: block;
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
   letter-spacing: 1px; font-size: 11px; margin-top: 12px; margin-bottom: 2px; text-transform: uppercase;
 }
 .footer-info p { font-size: 13px; color: rgba(255,255,255,0.3); line-height: 1.7; }
@@ -715,7 +710,7 @@ footer {
 }
 .footer-copy {
   font-size: 11px; color: rgba(255,255,255,0.18);
-  font-family: 'FS Meridian', 'Barlow Condensed', sans-serif; letter-spacing: 2px;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif; letter-spacing: 2px;
 }
 .footer-badge {
   background: var(--green); color: var(--black);
