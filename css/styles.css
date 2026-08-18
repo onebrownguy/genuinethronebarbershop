@@ -25,7 +25,7 @@
 
 /* ── RESET ── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 88px; }
 body {
   background: var(--black);
   color: var(--white);
@@ -50,7 +50,9 @@ body {
    NAVIGATION
    ============================================================ */
 nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  /* Must sit ABOVE .mobile-menu (250) — the hamburger doubles as the menu's
+     close button, and there is no Escape key on a phone. */
+  position: fixed; top: 0; left: 0; right: 0; z-index: 260;
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 48px;
   background: rgba(10,10,10,0.95);
@@ -58,6 +60,7 @@ nav {
   border-bottom: 1px solid rgba(154,205,50,0.15);
   transition: padding var(--transition-med);
 }
+nav.scrolled { padding: 10px 48px; }
 .nav-logo {
   display: flex; align-items: center; gap: 12px; text-decoration: none;
 }
@@ -102,10 +105,14 @@ nav {
 /* Mobile menu */
 .mobile-menu {
   display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(10,10,10,0.98); z-index: 199;
-  flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+  background: rgba(10,10,10,0.98); z-index: 250;
+  flex-direction: column; align-items: center; justify-content: safe center; gap: 32px;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 88px 24px 40px;
 }
-.mobile-menu.open { display: flex; }
+/* .mobile-menu.open is declared inside the ≤900px query only — above that
+   breakpoint the hamburger is display:none, so an open menu would be
+   un-closable. See the tablet block below. */
 .mobile-menu a {
   font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 4px;
   color: var(--white); text-decoration: none; transition: color var(--transition-fast);
@@ -251,13 +258,19 @@ section { padding: 80px 48px; }
 .about-img-main {
   position: absolute; top: 0; left: 0; width: 78%; height: 86%;
   object-fit: cover; border: 2px solid rgba(154,205,50,0.2);
+  /* team-full.jpg is a tall 3:4 group shot with the faces at ~25% height.
+     Default centre-cropping cuts the heads off once the container goes wide
+     (tablet/mobile, where the column is full-width). Bias the crop upward. */
+  object-position: center 22%;
 }
 .about-img-accent {
   position: absolute; bottom: 0; right: 0; width: 52%; height: 50%;
   object-fit: cover; border: 2px solid var(--gold);
 }
 .about-badge {
-  position: absolute; top: 38%; left: 60%; transform: translate(-50%, -50%);
+  /* Sits over the empty epoxy floor in the lower-left of the group shot.
+     Keep it clear of the 38%/60% area — that's where the faces are. */
+  position: absolute; top: 68%; left: 22%; transform: translate(-50%, -50%);
   background: var(--green); color: var(--black);
   width: 100px; height: 100px; border-radius: 50%;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -299,7 +312,7 @@ section { padding: 80px 48px; }
   margin-bottom: 48px; flex-wrap: wrap; gap: 20px;
 }
 .barbers-grid {
-  display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 2px;
+  display: grid; grid-template-columns: repeat(5, minmax(160px, 1fr)); gap: 2px;
 }
 
 .barber-card {
@@ -317,6 +330,14 @@ section { padding: 80px 48px; }
 }
 .barber-card:hover .barber-photo,
 .barber-card:hover .barber-photo-placeholder { transform: scale(1.04); }
+/* Monogram placeholder for barbers without a photo yet. Swap the element for
+   an <img class="barber-photo"> when the real portrait arrives. */
+.barber-photo-placeholder--monogram {
+  background: linear-gradient(160deg, #0a1a00 0%, #1e3000 42%, #080f00 100%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 110px; letter-spacing: 6px; line-height: 1;
+  color: var(--green); opacity: 0.5;
+}
 
 .barber-overlay {
   position: absolute; inset: 0;
@@ -349,7 +370,15 @@ section { padding: 80px 48px; }
   letter-spacing: 2px; cursor: pointer; width: 100%;
   opacity: 0; transform: translateY(6px); transition: opacity var(--transition-med), transform var(--transition-med);
 }
-.barber-card:hover .barber-book-btn { opacity: 1; transform: translateY(0); }
+.barber-card:hover .barber-book-btn,
+.barber-card:focus-within .barber-book-btn { opacity: 1; transform: translateY(0); }
+/* Touch devices never fire :hover — the button must not be invisible there. */
+@media (hover: none), (pointer: coarse) {
+  .barber-book-btn { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .barber-book-btn { opacity: 1 !important; transform: none !important; }
+}
 
 /* ============================================================
    SERVICES
@@ -422,7 +451,11 @@ section { padding: 80px 48px; }
   color: rgba(255,255,255,0.65);
   opacity: 0; transform: translateY(5px); transition: all var(--transition-med);
 }
-.gallery-item:hover .gallery-label { opacity: 1; transform: translateY(0); }
+.gallery-item:hover .gallery-label,
+.gallery-item:focus-within .gallery-label { opacity: 1; transform: translateY(0); }
+@media (hover: none), (pointer: coarse) {
+  .gallery-label { opacity: 1; transform: none; }
+}
 .social-block {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   background: #0a1500; gap: 10px; padding: 24px;
@@ -648,6 +681,8 @@ section { padding: 80px 48px; }
   transition: transform var(--transition-fast);
 }
 .wa-float:hover { transform: scale(1.1); }
+/* Don't paint the float over the mobile menu overlay. */
+body.menu-open .wa-float { display: none; }
 .wa-float svg { width: 28px; height: 28px; fill: white; }
 
 /* ============================================================
@@ -720,19 +755,24 @@ footer {
 /* ============================================================
    SCROLL REVEAL
    ============================================================ */
-.reveal {
+/* Fail open: content is visible unless JS has confirmed it can animate.
+   Without the .js gate, any script error leaves the whole page blank. */
+.reveal { opacity: 1; transform: none; }
+.js .reveal {
   opacity: 0; transform: translateY(24px);
   transition: opacity var(--transition-slow), transform var(--transition-slow);
 }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+.js .reveal.visible { opacity: 1; transform: translateY(0); }
 
 /* ============================================================
    RESPONSIVE — TABLET (≤ 900px)
    ============================================================ */
 @media (max-width: 900px) {
   nav { padding: 14px 24px; }
+  nav.scrolled { padding: 10px 24px; }
   .nav-links { display: none; }
-  .hamburger { display: flex; }
+  .hamburger { display: flex; padding: 14px; }
+  .mobile-menu.open { display: flex; }
   section { padding: 64px 28px; }
   .barbers-section, .gallery-section { padding: 64px 28px; }
   .gallery-section { padding: 64px 0; }
@@ -759,6 +799,7 @@ footer {
    ============================================================ */
 @media (max-width: 600px) {
   nav { padding: 12px 18px; }
+  nav.scrolled { padding: 8px 18px; }
   section { padding: 52px 18px; }
   .barbers-section { padding: 52px 18px; }
   .gallery-section { padding: 52px 0; }

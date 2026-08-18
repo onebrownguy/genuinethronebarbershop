@@ -11,3 +11,9 @@ Thumbs.db
 
 # Temp
 *.log
+
+# Bulk photo dumps (source media, not site assets)
+drive-download-*/
+
+# Generated / AI images
+hf_*.png

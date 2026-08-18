@@ -30,6 +30,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 
+  <!-- ── JS FLAG ── -->
+  <!-- Gates the .reveal animations. If JS is blocked or errors, the class is
+       never set and all content stays visible instead of the page going blank. -->
+  <script>document.documentElement.classList.add('js');</script>
+
   <!-- ── STYLES ── -->
   <link rel="stylesheet" href="css/styles.css">
 
@@ -67,11 +72,6 @@
         "closes": "18:00"
       }
     ],
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "5.0",
-      "reviewCount": "1286"
-    },
     "priceRange": "$$",
     "sameAs": [
       "https://www.instagram.com/genuinethronebarbershop/",
@@ -143,7 +143,7 @@
       <div class="hero-stats" aria-label="Shop stats">
         <div class="stat"><div class="stat-num">1,286+</div><div class="stat-label">5-Star Reviews</div></div>
         <div class="stat"><div class="stat-num">5.0</div><div class="stat-label">Avg Rating</div></div>
-        <div class="stat"><div class="stat-num">7+</div><div class="stat-label">Master Barbers</div></div>
+        <div class="stat"><div class="stat-num">5</div><div class="stat-label">Master Barbers</div></div>
         <div class="stat"><div class="stat-num">✓</div><div class="stat-label">Walk-Ins Welcome</div></div>
       </div>
     </div>
@@ -230,50 +230,8 @@
           </div>
         </article>
 
-        <!-- Jesus Sierra -->
-        <article class="barber-card" aria-label="Jesus Sierra, Master Barber">
-          <img class="barber-photo" src="assets/images/barbers/jesus.png" alt="Jesus Sierra — Freshest Fades in Texas" loading="lazy" decoding="async">
-          <div class="barber-overlay">
-            <div class="barber-tag">503 Reviews · Freshest Fades in Texas</div>
-            <div class="barber-name">Jesus Sierra</div>
-            <div class="barber-specialty">Precision Fades · Designs · Bilingual</div>
-            <div class="barber-reviews">
-              <span class="barber-stars" aria-hidden="true">★★★★★</span>
-              <span class="barber-count">503 reviews · Booksy</span>
-            </div>
-            <button class="barber-book-btn" data-barber="jesus">Book Jesus →</button>
-          </div>
-        </article>
 
-        <!-- Alain Gonzalez -->
-        <article class="barber-card" aria-label="Alain Gonzalez, Barber">
-          <img class="barber-photo" src="assets/images/barbers/alain.png" alt="Alain Gonzalez — Booksy Recommended" loading="lazy" decoding="async">
-          <div class="barber-overlay">
-            <div class="barber-tag">Booksy Recommended · 15.5K IG · YouTube · Cuban Barber</div>
-            <div class="barber-name">Alain Gonzalez</div>
-            <div class="barber-specialty">Fades · Eyebrows · Hairstyles · Bilingual</div>
-            <div class="barber-reviews">
-              <span class="barber-stars" aria-hidden="true">★★★★★</span>
-              <span class="barber-count">102 reviews · Booksy Recommended</span>
-            </div>
-            <button class="barber-book-btn" data-barber="alain">Book Alain →</button>
-          </div>
-        </article>
 
-        <!-- Kelvin Rodriguez -->
-        <article class="barber-card" aria-label="Kelvin Rodriguez, Master Barber">
-          <div class="barber-photo-placeholder" style="background:linear-gradient(160deg,#0a1a00 0%,#1e3000 40%,#080f00 100%);" aria-hidden="true">💈</div>
-          <div class="barber-overlay">
-            <div class="barber-tag">20 Years Experience</div>
-            <div class="barber-name">Kelvin Rodriguez</div>
-            <div class="barber-specialty">Fades · Style Consultation · Beard</div>
-            <div class="barber-reviews">
-              <span class="barber-stars" aria-hidden="true">★★★★★</span>
-              <span class="barber-count">86 reviews · 100% 5-star</span>
-            </div>
-            <button class="barber-book-btn" data-barber="kelvin">Book Kelvin →</button>
-          </div>
-        </article>
 
         <!-- Santiago Blendzz -->
         <article class="barber-card" aria-label="Santiago Blendzz, Barber Artist">
@@ -317,6 +275,21 @@
               <span class="barber-count">Booksy profile active · 1,681 IG followers</span>
             </div>
             <button class="barber-book-btn" data-barber="edy">Book Edy →</button>
+          </div>
+        </article>
+
+        <!-- Gzalez -->
+        <article class="barber-card" aria-label="Gzalez, Barber">
+          <div class="barber-photo-placeholder barber-photo-placeholder--monogram" aria-hidden="true">G</div>
+          <div class="barber-overlay">
+            <div class="barber-tag">@gzalez_barbertx · Cuban Barber</div>
+            <div class="barber-name">Gzalez</div>
+            <div class="barber-specialty">Fades · Beard · Eyebrows · Bilingual</div>
+            <div class="barber-reviews">
+              <span class="barber-stars" aria-hidden="true">★★★★★</span>
+              <span class="barber-count">112 reviews · Booksy</span>
+            </div>
+            <button class="barber-book-btn" data-barber="gzalez">Book Gzalez →</button>
           </div>
         </article>
 
@@ -498,24 +471,6 @@
         <div class="review-card">
           <div class="review-stars" aria-hidden="true">★★★★★</div>
           <div class="review-qmark" aria-hidden="true">"</div>
-          <p class="review-text">Absolutely flawless cut. Kelvin didn't just clean up my fade — he broke down different styles, showed me what works best for my face shape, and blended everything so smoothly it looks effortless.</p>
-          <div class="review-footer">
-            <span class="review-author">Arjun</span>
-            <span class="review-platform">Booksy · Kelvin</span>
-          </div>
-        </div>
-        <div class="review-card">
-          <div class="review-stars" aria-hidden="true">★★★★★</div>
-          <div class="review-qmark" aria-hidden="true">"</div>
-          <p class="review-text">Jesus has been cutting my hair for 4 years and kills it every time. The price for the cut you get is unmatched. If you want to look fresh, book with Jesus.</p>
-          <div class="review-footer">
-            <span class="review-author">Jayden H.</span>
-            <span class="review-platform">Google · Jesus</span>
-          </div>
-        </div>
-        <div class="review-card">
-          <div class="review-stars" aria-hidden="true">★★★★★</div>
-          <div class="review-qmark" aria-hidden="true">"</div>
           <p class="review-text">Cruz gave my son a Mohawk with a fire design. He catered to my 2-year-old with lollipops to keep him calm. My son enjoyed every second. Definitely will return.</p>
           <div class="review-footer">
             <span class="review-author">Terry C.</span>
@@ -529,15 +484,6 @@
           <div class="review-footer">
             <span class="review-author">Mattew</span>
             <span class="review-platform">Booksy · Santiago</span>
-          </div>
-        </div>
-        <div class="review-card">
-          <div class="review-stars" aria-hidden="true">★★★★★</div>
-          <div class="review-qmark" aria-hidden="true">"</div>
-          <p class="review-text">New to Austin and was afraid of going somewhere new. Very professional, detailed work. Asked how I wanted it every step of the way. Easy to talk to, chill vibe. Will definitely be back.</p>
-          <div class="review-footer">
-            <span class="review-author">Jake</span>
-            <span class="review-platform">Booksy · Kelvin</span>
           </div>
         </div>
         <div class="review-card">
@@ -724,7 +670,7 @@
         <div class="perk"><div class="perk-num" aria-hidden="true">05</div><div class="perk-icon" aria-hidden="true">⭐</div><div class="perk-title">1,286+ Five Star Reviews</div><p class="perk-text">Walk into a shop clients already trust. Instant credibility from day one.</p></div>
         <div class="perk"><div class="perk-num" aria-hidden="true">06</div><div class="perk-icon" aria-hidden="true">📅</div><div class="perk-title">Booksy Platform</div><p class="perk-text">Your own profile. Online booking, client reviews, and scheduling all in one place.</p></div>
         <div class="perk"><div class="perk-num" aria-hidden="true">07</div><div class="perk-icon" aria-hidden="true">📍</div><div class="perk-title">Prime Location</div><p class="perk-text">Burnet Rd between The Domain and Q2 Stadium. High foot traffic, easy parking.</p></div>
-        <div class="perk"><div class="perk-num" aria-hidden="true">08</div><div class="perk-icon" aria-hidden="true">🤝</div><div class="perk-title">Team That Has Your Back</div><p class="perk-text">Work alongside Jesus, Kelvin, Santiago, Julio, Alain, and Edy. Collaborative culture where everyone grows.</p></div>
+        <div class="perk"><div class="perk-num" aria-hidden="true">08</div><div class="perk-icon" aria-hidden="true">🤝</div><div class="perk-title">Team That Has Your Back</div><p class="perk-text">Work alongside Cruz, Santiago, Julio, Edy, and Gzalez. Collaborative culture where everyone grows.</p></div>
       </div>
 
       <div class="join-cta reveal">

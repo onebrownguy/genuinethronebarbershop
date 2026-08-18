@@ -5,24 +5,46 @@
 // ── NAV SHRINK ON SCROLL ──────────────────────────────────────
 const nav = document.getElementById('mainNav');
 
+let navScrolled = null;
+let navTicking  = false;
+
 function updateNav() {
+  navTicking = false;
+  if (!nav) return;
   const scrolled = window.scrollY > 60;
-  const wide     = window.innerWidth > 900;
-  nav.style.padding = scrolled
-    ? (wide ? '10px 48px' : '10px 24px')
-    : (wide ? '16px 48px' : '14px 24px');
+  if (scrolled === navScrolled) return;      // no work when state is unchanged
+  navScrolled = scrolled;
+  nav.classList.toggle('scrolled', scrolled); // class, not inline style —
+                                              // inline styles outrank the media queries
 }
 
-window.addEventListener('scroll', updateNav, { passive: true });
-window.addEventListener('resize', updateNav, { passive: true });
+function requestNavUpdate() {
+  if (navTicking) return;
+  navTicking = true;
+  requestAnimationFrame(updateNav);
+}
+
+window.addEventListener('scroll', requestNavUpdate, { passive: true });
+window.addEventListener('resize', requestNavUpdate, { passive: true });
+updateNav(); // set initial state for deep links / restored scroll positions
 
 // ── MOBILE MENU ──────────────────────────────────────────────
 const mobileMenu = document.getElementById('mobileMenu');
 const hamburger  = document.getElementById('hamburger');
 
+let lockedScrollY = 0;
+
 function openMobile() {
+  lockedScrollY = window.scrollY;
   mobileMenu.classList.add('open');
   hamburger.classList.add('open');
+  // position:fixed lock — overflow:hidden alone does not stop touch
+  // scrolling of the background on iOS Safari.
+  document.body.classList.add('menu-open');
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${lockedScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
   document.body.style.overflow = 'hidden';
   hamburger.setAttribute('aria-expanded', 'true');
 }
@@ -30,7 +52,13 @@ function openMobile() {
 function closeMobile() {
   mobileMenu.classList.remove('open');
   hamburger.classList.remove('open');
+  document.body.classList.remove('menu-open');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
   document.body.style.overflow = '';
+  window.scrollTo(0, lockedScrollY);
   hamburger.setAttribute('aria-expanded', 'false');
 }
 
@@ -38,25 +66,35 @@ function toggleMobile() {
   mobileMenu.classList.contains('open') ? closeMobile() : openMobile();
 }
 
-hamburger.addEventListener('click', toggleMobile);
+if (mobileMenu && hamburger) {
+  hamburger.addEventListener('click', toggleMobile);
 
-// Close mobile menu when a link is tapped
-mobileMenu.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', closeMobile);
-});
+  // Close mobile menu when a link is tapped
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMobile);
+  });
 
-// Close mobile menu on Escape key
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMobile();
-});
+  // Close mobile menu on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMobile();
+  });
+
+  // Close on resize past the breakpoint — above 900px the hamburger is
+  // display:none, so an open menu would have no way to close.
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900 && mobileMenu.classList.contains('open')) closeMobile();
+  }, { passive: true });
+}
 
 // ── SCROLL REVEAL ─────────────────────────────────────────────
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), i * 60);
-      revealObserver.unobserve(entry.target);
-    }
+  // Stagger by position among the entries actually revealing, not among all
+  // entries in the batch — otherwise the delay depends on browser batching.
+  entries.filter(e => e.isIntersecting).forEach((entry, i) => {
+    setTimeout(() => entry.target.classList.add('visible'), prefersReducedMotion ? 0 : i * 60);
+    revealObserver.unobserve(entry.target);
   });
 }, { threshold: 0.08 });
 
@@ -85,12 +123,10 @@ document.querySelectorAll('.faq-q').forEach(btn => {
 // ── BARBER BOOKING BUTTONS ────────────────────────────────────
 const BARBER_LINKS = {
   cruz:     'https://booksy.com/en-us/287080_cruzycruzcial_barber-shop_7_usa',
-  jesus:    'https://booksy.com/en-us/956936_jesus-barber_barber-shop_7_usa',
-  alain:    'https://booksy.com/en-us/931858_gzalez-barber_barber-shop_134608_austin',
-  kelvin:   'https://booksy.com/en-us/2501_genuine-throne-barbershop-kelvinbarber_barber-shop_7_usa',
   santiago: 'https://booksy.com/en-us/1360130_santiago-blendzz_barber-shop_37500_leander',
   julio:    'https://booksy.com/en-us/933271_julio-barber_barber-shop_134608_austin',
   edy:      'https://booksy.com/en-us/instant-experiences/widget/1148599',
+  gzalez:   'https://booksy.com/en-us/931858_gzalez-barber_barber-shop_134608_austin',
 };
 
 document.querySelectorAll('.barber-book-btn[data-barber]').forEach(btn => {
