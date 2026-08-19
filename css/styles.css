@@ -17,6 +17,11 @@
   --black-soft:  #1a1a1a;
   --white:       #f5f5f0;
   --gray:        #888;
+  /* Muted body/label text on dark. ~8.7:1 on --black, ~7.6:1 on panels —
+     clears WCAG AA at every size. Replaces a scatter of rgba(255,255,255,.18–.45)
+     that failed AA (worst ~1.6:1). Hierarchy here is carried by size/weight,
+     not alpha, so one accessible token is enough. */
+  --text-muted:  rgba(255,255,255,0.66);
   --transition-fast: 0.2s ease;
   --transition-med:  0.3s ease;
   --transition-slow: 0.7s ease;
@@ -153,7 +158,12 @@ nav.scrolled { padding: 10px 48px; }
 }
 .hero-bg {
   position: absolute; inset: 0;
+  /* Plain url() first as the fallback for browsers without image-set/AVIF
+     (Safari < 16); modern browsers take the AVIF (166 KB vs 431 KB JPEG). */
   background-image: url('../assets/images/shop/hero-bg.jpg');
+  background-image: image-set(
+    url('../assets/images/shop/hero-bg.avif') type('image/avif'),
+    url('../assets/images/shop/hero-bg.jpg')  type('image/jpeg'));
   background-size: cover; background-position: center;
   filter: brightness(0.25) saturate(1.4);
 }
@@ -286,7 +296,7 @@ section { padding: 80px 48px; }
   margin-top: 14px;
   font-size: 14px;
   font-style: italic;
-  color: rgba(255,255,255,0.4);
+  color: var(--text-muted);
 }
 .pillar {
   border: 1px solid rgba(154,205,50,0.12); padding: 18px;
@@ -300,7 +310,7 @@ section { padding: 80px 48px; }
   font-weight: 700; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--green); margin-bottom: 5px;
 }
-.pillar-text { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+.pillar-text { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
 /* ============================================================
    BARBERS
@@ -362,7 +372,7 @@ section { padding: 80px 48px; }
 .barber-stars   { color: var(--gold); font-size: 11px; }
 .barber-count   {
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
-  font-size: 11px; color: rgba(255,255,255,0.35);
+  font-size: 11px; color: var(--text-muted);
 }
 .barber-book-btn {
   margin-top: 12px; background: var(--green); color: var(--black); border: none;
@@ -411,7 +421,7 @@ section { padding: 80px 48px; }
   color: var(--white); margin-bottom: 8px; position: relative;
 }
 .service-desc {
-  font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.6;
+  font-size: 13px; color: var(--text-muted); line-height: 1.6;
   margin-bottom: 18px; position: relative;
 }
 .service-price {
@@ -466,7 +476,7 @@ section { padding: 80px 48px; }
 }
 .social-handle {
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
-  font-size: 12px; letter-spacing: 3px; color: rgba(255,255,255,0.35);
+  font-size: 12px; letter-spacing: 3px; color: var(--text-muted);
 }
 .social-links { display: flex; gap: 10px; margin-top: 8px; }
 .social-link {
@@ -491,14 +501,14 @@ section { padding: 80px 48px; }
 .rating-count {
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: var(--text-muted);
 }
 .rating-sep { width: 1px; height: 70px; background: rgba(255,255,255,0.08); }
 .rating-breakdown { display: flex; flex-direction: column; gap: 5px; }
 .brow {
   display: flex; align-items: center; gap: 9px;
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
-  font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.35);
+  font-size: 11px; letter-spacing: 2px; color: var(--text-muted);
 }
 .brow-bar { width: 110px; height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
 .brow-fill { height: 100%; background: var(--green); border-radius: 2px; }
@@ -526,7 +536,7 @@ section { padding: 80px 48px; }
   text-transform: uppercase; color: var(--green);
 }
 .review-platform {
-  font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.2);
+  font-size: 10px; letter-spacing: 2px; color: var(--text-muted);
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
 }
 
@@ -556,7 +566,7 @@ section { padding: 80px 48px; }
   font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.5); padding-bottom: 18px;
 }
 .faq-a .faq-es {
-  margin-top: 8px; color: rgba(255,255,255,0.35); font-style: italic;
+  margin-top: 8px; color: var(--text-muted); font-style: italic;
 }
 .faq-item.open .faq-icon { transform: rotate(45deg); }
 .faq-item.open .faq-a    { max-height: 500px; }
@@ -566,7 +576,7 @@ section { padding: 80px 48px; }
 .map-address {
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
-  color: rgba(255,255,255,0.4); margin-bottom: 14px;
+  color: var(--text-muted); margin-bottom: 14px;
 }
 .map-embed-wrap {
   width: 100%; border: 1px solid rgba(154,205,50,0.12); overflow: hidden; position: relative;
@@ -617,7 +627,7 @@ section { padding: 80px 48px; }
   font-weight: 700; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--green); margin-bottom: 8px;
 }
-.perk-text { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+.perk-text { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
 .join-cta {
   background: var(--black-soft); border: 1px solid rgba(154,205,50,0.14);
   padding: 36px 44px; display: flex; align-items: center;
@@ -629,7 +639,7 @@ section { padding: 80px 48px; }
 }
 .join-cta-sub {
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
-  font-size: 13px; letter-spacing: 2px; color: rgba(255,255,255,0.35);
+  font-size: 13px; letter-spacing: 2px; color: var(--text-muted);
 }
 .join-cta-btns { display: flex; gap: 10px; flex-wrap: wrap; }
 
@@ -666,13 +676,13 @@ section { padding: 80px 48px; }
 .cta-sub {
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-size: 15px; letter-spacing: 3px; text-transform: uppercase;
-  color: rgba(255,255,255,0.45); margin-bottom: 40px;
+  color: var(--text-muted); margin-bottom: 40px;
 }
 .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 .cta-hours {
   margin-top: 28px;
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
-  font-size: 12px; letter-spacing: 4px; color: rgba(255,255,255,0.2);
+  font-size: 12px; letter-spacing: 4px; color: var(--text-muted);
 }
 
 /* ============================================================
@@ -712,7 +722,7 @@ footer {
   color: var(--gold); margin-bottom: 14px;
 }
 .footer-desc {
-  font-size: 13px; color: rgba(255,255,255,0.3);
+  font-size: 13px; color: var(--text-muted);
   line-height: 1.7; max-width: 260px; margin-bottom: 18px;
 }
 .footer-socials { display: flex; gap: 10px; }
@@ -720,7 +730,7 @@ footer {
   width: 34px; height: 34px; border: 1px solid rgba(154,205,50,0.18);
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; font-family: 'Jost', 'Barlow Condensed', sans-serif;
-  font-weight: 700; color: rgba(255,255,255,0.35); text-decoration: none;
+  font-weight: 700; color: var(--text-muted); text-decoration: none;
   transition: all var(--transition-fast);
 }
 .footer-social-btn:hover { border-color: var(--green); color: var(--green); }
@@ -731,7 +741,7 @@ footer {
 }
 .footer-links { list-style: none; display: flex; flex-direction: column; gap: 9px; }
 .footer-links a {
-  text-decoration: none; font-size: 13px; color: rgba(255,255,255,0.3);
+  text-decoration: none; font-size: 13px; color: var(--text-muted);
   transition: color var(--transition-fast);
 }
 .footer-links a:hover { color: var(--green); }
@@ -740,7 +750,7 @@ footer {
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
   letter-spacing: 1px; font-size: 11px; margin-top: 12px; margin-bottom: 2px; text-transform: uppercase;
 }
-.footer-info p { font-size: 13px; color: rgba(255,255,255,0.3); line-height: 1.7; }
+.footer-info p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
 .footer-info a { color: var(--green); text-decoration: none; font-size: 12px; }
 .footer-info a:hover { text-decoration: underline; }
 .footer-bottom {
@@ -749,7 +759,7 @@ footer {
   border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; flex-wrap: wrap; gap: 10px;
 }
 .footer-copy {
-  font-size: 11px; color: rgba(255,255,255,0.18);
+  font-size: 11px; color: var(--text-muted);
   font-family: 'Jost', 'Barlow Condensed', sans-serif; letter-spacing: 2px;
 }
 .footer-badge {

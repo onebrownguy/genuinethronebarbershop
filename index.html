@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- ── SEO ── -->
-  <title>Genuine Throne Barbershop | Austin, TX — Precision Fades Near The Domain</title>
-  <meta name="description" content="Genuine Throne Barbershop — Austin's premier barbershop on Burnet Rd near The Domain and Q2 Stadium. Precision fades, expert cuts, bilingual staff. 1,286+ five-star reviews. Walk-ins welcome. Book online.">
+  <title>Genuine Throne Barbershop | Fades in Austin, TX</title>
+  <meta name="description" content="Austin barbershop on Burnet Rd near The Domain & Q2 Stadium. Precision fades, beard trims & kids cuts. Bilingual staff, walk-ins welcome. Book online.">
   <meta name="keywords" content="barbershop Austin TX, fades Austin, barber near The Domain, barber near Q2 Stadium, bilingual barbershop Austin, Burnet Road barber">
   <link rel="canonical" href="https://www.genuinethrone.com/">
 
@@ -37,8 +37,11 @@
 
   <!-- ── LCP PRELOAD ── -->
   <!-- The hero image is a CSS background, so the browser cannot discover it
-       until styles.css parses. Preloading it is the single biggest LCP win. -->
-  <link rel="preload" as="image" href="assets/images/shop/hero-bg.jpg" fetchpriority="high">
+       until styles.css parses. Preloading it is the single biggest LCP win.
+       The type="image/avif" gate means AVIF-capable browsers (>95%) preload the
+       166 KB AVIF, while older browsers skip this link entirely and pick up the
+       JPEG through the image-set() fallback in .hero-bg — no double download. -->
+  <link rel="preload" as="image" href="assets/images/shop/hero-bg.avif" type="image/avif" fetchpriority="high">
 
   <!-- ── STYLES ── -->
   <link rel="stylesheet" href="css/styles.css">
@@ -82,6 +85,90 @@
       "https://www.instagram.com/genuinethronebarbershop/",
       "https://www.tiktok.com/@genuinethrone",
       "https://www.facebook.com/share/yW2mjH61Ts4nS52P/"
+    ]
+  }
+  </script>
+
+  <!-- ── STRUCTURED DATA (FAQPage) ── -->
+  <!-- Mirrors the visible FAQ accordion below. English answers only (page
+       lang is en); keep this in sync if the FAQ copy changes. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do you take walk-ins?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Walk-ins are always welcome. For the best experience and to guarantee your preferred barber, we recommend booking online through Booksy — it only takes a minute and you can book 24/7."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between a taper and a fade?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A taper gradually decreases hair length toward the neck and ears while keeping some length on top. A fade goes shorter, often down to the skin, creating a seamless blend from short to nothing. Our barbers will recommend the right option for your hair type and face shape."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does a haircut cost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Base cuts start at $40 depending on your barber. Specialty services like color, designs, and beard work are priced separately. Check each barber's Booksy profile for current pricing and available services."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I book an appointment?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The easiest way is through Booksy — tap Book Now anywhere on this page. You can also call us at (737) 222-0469 or send us a message on Instagram or WhatsApp. Online booking is available 24/7."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are you good with kids?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. We have multiple barbers who specialize in kids cuts and are patient with young children. We have a PS5 with FIFA, sports on the big screen, and free water to keep everyone comfortable while they wait."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer color services?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Cruz offers bleach and toner, custom color, and grey coverage starting from $150. Color appointments require more time so booking in advance is strongly recommended."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the shop bilingual?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. We are a bilingual shop and our barbers are comfortable serving clients in both English and Spanish. The shop is rooted in Latino culture and near the Q2 Stadium and Burnet Road corridor."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where are you located?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We are at 9505 Burnet Rd Building A, Austin TX 78758 — near The Domain and Q2 Stadium. Parking is available on site. Hours are Monday through Saturday 10AM to 6PM."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I maintain my fade between cuts?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most clients come back every 2 to 4 weeks to keep their fade sharp. Ask your barber at your appointment — they will give you a personalized recommendation based on your hair growth rate and style."
+        }
+      }
     ]
   }
   </script>
@@ -139,7 +226,7 @@
     <div class="hero-content">
       <img class="hero-logo" src="assets/images/logo.png" alt="Genuine Throne Barbershop" width="110" height="110">
       <p class="hero-eyebrow">Austin, Texas · Est. 2024 · Bilingual / Bilingüe</p>
-      <h1 class="hero-title">Genuine<br><span>Throne</span></h1>
+      <h1 class="hero-title">Genuine<br><span>Throne</span><span class="sr-only"> Barbershop — Precision Fades in Austin, TX</span></h1>
       <p class="hero-sub">Precision cuts. Royal experience. Austin's finest barbershop near The Domain and Q2 Stadium.</p>
       <div class="hero-actions">
         <a href="https://link.booksy.com/GenuineThroneBarbershop" class="btn-primary" target="_blank" rel="noopener noreferrer">Book Your Appointment</a>
@@ -652,7 +739,7 @@
           <p class="section-body" style="margin-bottom:14px;">Genuine Throne is a creative space built for barbers who take their craft seriously and want an environment that matches their ambition.</p>
           <p class="section-body" style="margin-bottom:14px;">
             Located on Burnet Rd near Q2 Stadium in the heart of Austin's Latino community — bilingual, culturally rooted, and built to help you grow your brand.
-            <br><em style="color:rgba(255,255,255,0.4);font-size:13px;">Ubicado en Burnet Rd cerca del Q2 Stadium en el corazón de la comunidad latina de Austin.</em>
+            <br><em style="color:var(--text-muted);font-size:13px;">Ubicado en Burnet Rd cerca del Q2 Stadium en el corazón de la comunidad latina de Austin.</em>
           </p>
           <p class="section-body">Licensed barber ready to work in a professional high-energy space? We want to hear from you.</p>
           <div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;">
