@@ -783,6 +783,7 @@ footer {
   .services-grid { grid-template-columns: repeat(2, 1fr); }
   .gallery-grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 220px; }
   .gallery-hero, .gallery-full, .gallery-wide { grid-row: span 1; grid-column: span 1; }
+  .social-block { grid-column: 1 / -1; }
   .reviews-grid { grid-template-columns: repeat(2, 1fr); }
   .reviews-bar { gap: 16px; }
   .rating-sep { display: none; }
@@ -822,6 +823,7 @@ footer {
   .gallery-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
   .gallery-item { height: 220px; }
   .gallery-hero, .gallery-full, .gallery-wide { grid-row: span 1; grid-column: span 1; height: 220px; }
+  .social-block { grid-column: 1 / -1; }
   .reviews-grid { grid-template-columns: 1fr; }
   .reviews-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
   .rating-big { font-size: 72px; }
