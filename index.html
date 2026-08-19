@@ -35,6 +35,11 @@
        never set and all content stays visible instead of the page going blank. -->
   <script>document.documentElement.classList.add('js');</script>
 
+  <!-- ── LCP PRELOAD ── -->
+  <!-- The hero image is a CSS background, so the browser cannot discover it
+       until styles.css parses. Preloading it is the single biggest LCP win. -->
+  <link rel="preload" as="image" href="assets/images/shop/hero-bg.jpg" fetchpriority="high">
+
   <!-- ── STYLES ── -->
   <link rel="stylesheet" href="css/styles.css">
 
@@ -235,7 +240,7 @@
 
         <!-- Santiago Blendzz -->
         <article class="barber-card" aria-label="Santiago Blendzz, Barber Artist">
-          <img class="barber-photo" src="assets/images/barbers/santiago.png" alt="Santiago Blendzz — Barber Artist" loading="lazy" decoding="async">
+          <img class="barber-photo" src="assets/images/barbers/santiago.jpg" alt="Santiago Blendzz — Barber Artist" loading="lazy" decoding="async">
           <div class="barber-overlay">
             <div class="barber-tag">Booksy Recommended · Barber Artist</div>
             <div class="barber-name">Santiago Blendzz</div>
@@ -250,7 +255,7 @@
 
         <!-- Julio Cesar Gongora -->
         <article class="barber-card" aria-label="Julio Cesar Gongora, Barber">
-          <img class="barber-photo" src="assets/images/barbers/julio.png" alt="Julio Cesar Gongora — Digital Creator Barber" loading="lazy" decoding="async">
+          <img class="barber-photo" src="assets/images/barbers/julio.jpg" alt="Julio Cesar Gongora — Digital Creator Barber" loading="lazy" decoding="async">
           <div class="barber-overlay">
             <div class="barber-tag">Booksy Recommended · Digital Creator</div>
             <div class="barber-name">Julio Cesar Gongora</div>
@@ -265,7 +270,7 @@
 
         <!-- Edy -->
         <article class="barber-card" aria-label="Edy, Barber Artist">
-          <img class="barber-photo" src="assets/images/barbers/edy.png" alt="Edy — De Venezuela pa el Mundo" loading="lazy" decoding="async">
+          <img class="barber-photo" src="assets/images/barbers/edy.jpg" alt="Edy — De Venezuela pa el Mundo" loading="lazy" decoding="async">
           <div class="barber-overlay">
             <div class="barber-tag">De Venezuela pa el Mundo · Barber Artist</div>
             <div class="barber-name">Edy</div>
@@ -656,8 +661,8 @@
           </div>
         </div>
         <div class="join-images">
-          <img class="join-img-main"   src="assets/images/shop/join-main.png"   alt="Genuine Throne barber station" loading="lazy" decoding="async">
-          <img class="join-img-accent" src="assets/images/shop/join-accent.png" alt="Barber at work" loading="lazy" decoding="async">
+          <img class="join-img-main"   src="assets/images/shop/join-main.jpg"   alt="Genuine Throne barber station" loading="lazy" decoding="async">
+          <img class="join-img-accent" src="assets/images/shop/join-accent.jpg" alt="Barber at work" loading="lazy" decoding="async">
         </div>
       </div>
 
