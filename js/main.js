@@ -123,7 +123,7 @@ document.querySelectorAll('.faq-q').forEach(btn => {
 // ── BARBER BOOKING BUTTONS ────────────────────────────────────
 const BARBER_LINKS = {
   cruz:     'https://booksy.com/en-us/287080_cruzycruzcial_barber-shop_7_usa',
-  santiago: 'https://booksy.com/en-us/1360130_santiago-blendzz_barber-shop_37500_leander',
+  santiago: 'https://booksy.com/en-us/1360130_santiago-blendzz_barber-shop_134608_austin',
   julio:    'https://booksy.com/en-us/933271_julio-barber_barber-shop_134608_austin',
   edy:      'https://booksy.com/en-us/instant-experiences/widget/1148599',
   gzalez:   'https://booksy.com/en-us/931858_gzalez-barber_barber-shop_134608_austin',
