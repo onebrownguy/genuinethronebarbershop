@@ -51,6 +51,11 @@ body {
   clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
 }
 
+/* <picture> wrappers around content images must not affect layout: display:
+   contents removes the picture box so the inner <img> stays the effective
+   grid/flex child and every .gallery-img / .about-img-* rule still applies. */
+picture { display: contents; }
+
 /* ============================================================
    NAVIGATION
    ============================================================ */
