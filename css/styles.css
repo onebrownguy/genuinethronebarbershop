@@ -325,13 +325,14 @@ section { padding: 80px 48px; }
 .testimonials-header { text-align: center; margin-bottom: 40px; }
 .testimonials-title { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--white); margin-bottom: 8px; letter-spacing: 2px; }
 .testimonials-subtitle { font-family: 'Jost', 'Barlow Condensed', sans-serif; font-size: 14px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
-.testimonials-carousel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.testimonial-slide { background: var(--black-soft); padding: 28px; border: 1px solid rgba(154,205,50,0.12); }
+.testimonials-carousel { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; min-height: 220px; }
+.testimonial-slide { background: var(--black-soft); padding: 28px; border: 1px solid rgba(154,205,50,0.12); opacity: 1; transition: opacity 0.6s ease-in-out; }
 .testimonial-stars { font-size: 14px; color: var(--gold); margin-bottom: 12px; letter-spacing: 2px; }
 .testimonial-text { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.6); margin-bottom: 16px; font-style: italic; }
 .testimonial-author { font-family: 'Jost', 'Barlow Condensed', sans-serif; font-size: 12px; color: var(--green); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 @media (max-width: 900px) {
   .testimonials-carousel { grid-template-columns: 1fr; }
+  .testimonial-slide { opacity: 1 !important; }
   .testimonials-section { padding: 48px 28px; }
 }
 

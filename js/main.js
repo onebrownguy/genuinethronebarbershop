@@ -137,6 +137,49 @@ document.querySelectorAll('.barber-book-btn[data-barber]').forEach(btn => {
   });
 });
 
+// ── BARBER FILTER ────────────────────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const filter = btn.dataset.filter;
+
+    // Update active button
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Filter barber cards
+    document.querySelectorAll('.barber-card').forEach(card => {
+      if (filter === 'all') {
+        card.style.opacity = '1';
+        card.style.pointerEvents = 'auto';
+      } else {
+        const specialties = card.dataset.specialty.split(' ');
+        const matches = specialties.includes(filter);
+        card.style.opacity = matches ? '1' : '0.4';
+        card.style.pointerEvents = matches ? 'auto' : 'none';
+      }
+    });
+  });
+});
+
+// ── TESTIMONIAL CAROUSEL AUTO-ROTATE ─────────────────────────────
+const carousel = document.querySelector('.testimonials-carousel');
+if (carousel) {
+  const slides = carousel.querySelectorAll('.testimonial-slide');
+  let currentIndex = 0;
+
+  function rotateCarousel() {
+    slides.forEach((slide, i) => {
+      slide.style.opacity = i === currentIndex ? '1' : '0';
+      slide.style.pointerEvents = i === currentIndex ? 'auto' : 'none';
+    });
+    currentIndex = (currentIndex + 1) % slides.length;
+  }
+
+  // Auto-rotate every 7 seconds
+  if (slides.length > 1) setInterval(rotateCarousel, 7000);
+  rotateCarousel(); // Initial setup
+}
+
 // ── ACTIVE NAV LINK (SCROLL SPY) ─────────────────────────────
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
