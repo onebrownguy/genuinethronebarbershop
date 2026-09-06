@@ -330,7 +330,22 @@ section { padding: 80px 48px; }
 .testimonial-stars { font-size: 14px; color: var(--gold); margin-bottom: 12px; letter-spacing: 2px; }
 .testimonial-text { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.6); margin-bottom: 16px; font-style: italic; }
 .testimonial-author { font-family: 'Jost', 'Barlow Condensed', sans-serif; font-size: 12px; color: var(--green); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ============================================================
+   MOBILE STICKY BOOKING BAR
+   ============================================================ */
+.mobile-book-bar { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 240; background: linear-gradient(180deg, rgba(154,205,50,0) 0%, rgba(10,10,10,0.95) 40%); backdrop-filter: blur(8px); padding: 16px; border-top: 2px solid var(--green); }
+.mobile-book-bar-inner { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.mobile-call-btn, .mobile-sms-btn, .mobile-book-btn { flex: 1; padding: 12px 16px; font-size: 14px; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; transition: all var(--transition-fast); text-decoration: none; text-align: center; display: block; }
+.mobile-call-btn { background: transparent; border: 1.5px solid var(--green); color: var(--green); }
+.mobile-call-btn:active { background: rgba(154,205,50,0.15); }
+.mobile-sms-btn { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); }
+.mobile-sms-btn:active { background: rgba(200,149,42,0.15); }
+.mobile-book-btn { background: var(--green); color: var(--black); font-size: 15px; }
+.mobile-book-btn:active { background: var(--green-bright); }
+
 @media (max-width: 900px) {
+  .mobile-book-bar { display: block; }
   .testimonials-carousel { grid-template-columns: 1fr; }
   .testimonial-slide { opacity: 1 !important; }
   .testimonials-section { padding: 48px 28px; }

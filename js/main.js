@@ -161,23 +161,63 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
-// ── TESTIMONIAL CAROUSEL AUTO-ROTATE ─────────────────────────────
+// ── TESTIMONIAL CAROUSEL AUTO-ROTATE + SWIPE ──────────────────────
 const carousel = document.querySelector('.testimonials-carousel');
 if (carousel) {
   const slides = carousel.querySelectorAll('.testimonial-slide');
   let currentIndex = 0;
+  let touchStartX = 0;
+  let touchEndX = 0;
+  let autoRotateTimer;
 
-  function rotateCarousel() {
+  function showSlide(index) {
     slides.forEach((slide, i) => {
-      slide.style.opacity = i === currentIndex ? '1' : '0';
-      slide.style.pointerEvents = i === currentIndex ? 'auto' : 'none';
+      slide.style.opacity = i === index ? '1' : '0';
+      slide.style.pointerEvents = i === index ? 'auto' : 'none';
     });
-    currentIndex = (currentIndex + 1) % slides.length;
   }
 
-  // Auto-rotate every 7 seconds
-  if (slides.length > 1) setInterval(rotateCarousel, 7000);
-  rotateCarousel(); // Initial setup
+  function rotateCarousel() {
+    currentIndex = (currentIndex + 1) % slides.length;
+    showSlide(currentIndex);
+  }
+
+  function resetAutoRotate() {
+    clearInterval(autoRotateTimer);
+    if (slides.length > 1 && window.innerWidth <= 900) {
+      autoRotateTimer = setInterval(rotateCarousel, 7000);
+    }
+  }
+
+  // Swipe handlers
+  carousel.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+    clearInterval(autoRotateTimer);
+  }, false);
+
+  carousel.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    const threshold = 50;
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        currentIndex = (currentIndex + 1) % slides.length; // Swipe left → next
+      } else {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Swipe right → prev
+      }
+      showSlide(currentIndex);
+    }
+    resetAutoRotate();
+  }, false);
+
+  // Auto-rotate on desktop only, or on mobile after initial show
+  if (slides.length > 1) {
+    showSlide(0);
+    if (window.innerWidth <= 900) {
+      autoRotateTimer = setInterval(rotateCarousel, 7000);
+    }
+  }
 }
 
 // ── ACTIVE NAV LINK (SCROLL SPY) ─────────────────────────────
