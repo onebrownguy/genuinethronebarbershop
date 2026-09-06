@@ -433,6 +433,13 @@ section { padding: 80px 48px; }
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
   font-weight: 700; font-size: 20px; color: var(--green);
 }
+.service-btn {
+  display: inline-block; margin-top: 12px;
+  font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 2px;
+  color: var(--green); text-decoration: none; border: 1px solid rgba(154,205,50,0.4);
+  padding: 8px 16px; transition: all var(--transition-fast);
+}
+.service-btn:hover { border-color: var(--green); background: rgba(154,205,50,0.08); }
 
 /* ============================================================
    GALLERY
