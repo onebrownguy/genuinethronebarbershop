@@ -103,7 +103,7 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 // ── FAQ ACCORDION ─────────────────────────────────────────────
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.addEventListener('click', () => {
-    const item    = btn.parentElement;
+    const item    = btn.closest('.faq-item');
     const wasOpen = item.classList.contains('open');
 
     // Close all
