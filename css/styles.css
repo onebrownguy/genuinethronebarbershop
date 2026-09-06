@@ -318,6 +318,24 @@ section { padding: 80px 48px; }
 .pillar-text { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
 /* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+.testimonials-section { background: var(--black); padding: 60px 48px; }
+.testimonials-inner { max-width: 800px; margin: 0 auto; }
+.testimonials-header { text-align: center; margin-bottom: 40px; }
+.testimonials-title { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--white); margin-bottom: 8px; letter-spacing: 2px; }
+.testimonials-subtitle { font-family: 'Jost', 'Barlow Condensed', sans-serif; font-size: 14px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+.testimonials-carousel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.testimonial-slide { background: var(--black-soft); padding: 28px; border: 1px solid rgba(154,205,50,0.12); }
+.testimonial-stars { font-size: 14px; color: var(--gold); margin-bottom: 12px; letter-spacing: 2px; }
+.testimonial-text { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.6); margin-bottom: 16px; font-style: italic; }
+.testimonial-author { font-family: 'Jost', 'Barlow Condensed', sans-serif; font-size: 12px; color: var(--green); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+@media (max-width: 900px) {
+  .testimonials-carousel { grid-template-columns: 1fr; }
+  .testimonials-section { padding: 48px 28px; }
+}
+
+/* ============================================================
    BARBERS
    ============================================================ */
 .barbers-section { background: var(--black-soft); padding: 80px 48px; }
@@ -326,6 +344,16 @@ section { padding: 80px 48px; }
   display: flex; justify-content: space-between; align-items: flex-end;
   margin-bottom: 48px; flex-wrap: wrap; gap: 20px;
 }
+.barbers-filters {
+  display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center;
+}
+.filter-btn {
+  background: none; border: 1px solid rgba(154,205,50,0.3); color: var(--text-muted);
+  padding: 10px 20px; font-family: 'Jost', 'Barlow Condensed', sans-serif;
+  font-weight: 600; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: all var(--transition-fast);
+}
+.filter-btn:hover, .filter-btn.active { border-color: var(--green); color: var(--green); background: rgba(154,205,50,0.08); }
 .barbers-grid {
   display: grid; grid-template-columns: repeat(5, minmax(160px, 1fr)); gap: 2px;
 }
