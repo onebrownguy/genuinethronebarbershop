@@ -182,9 +182,13 @@ if (carousel) {
     showSlide(currentIndex);
   }
 
+  // Carousel mode is mobile-only. Above 900px the CSS lays all three slides out
+  // in a grid, so hiding two of them would leave empty columns.
+  const carouselMQ = window.matchMedia('(max-width: 900px)');
+
   function resetAutoRotate() {
     clearInterval(autoRotateTimer);
-    if (slides.length > 1 && window.innerWidth <= 900) {
+    if (slides.length > 1 && carouselMQ.matches && !prefersReducedMotion) {
       autoRotateTimer = setInterval(rotateCarousel, 7000);
     }
   }
@@ -211,13 +215,29 @@ if (carousel) {
     resetAutoRotate();
   }, false);
 
-  // Auto-rotate on desktop only, or on mobile after initial show
-  if (slides.length > 1) {
-    showSlide(0);
-    if (window.innerWidth <= 900) {
-      autoRotateTimer = setInterval(rotateCarousel, 7000);
+  // Clear the inline opacity/pointer-events so the desktop grid shows every slide.
+  function showAllSlides() {
+    slides.forEach(slide => {
+      slide.style.opacity = '';
+      slide.style.pointerEvents = '';
+    });
+  }
+
+  // Rotate on mobile; show the full grid on desktop. Re-runs on breakpoint
+  // change so resizing across 900px never strands hidden slides.
+  function syncCarousel() {
+    clearInterval(autoRotateTimer);
+    if (slides.length > 1 && carouselMQ.matches) {
+      currentIndex = 0;
+      showSlide(0);
+      resetAutoRotate();
+    } else {
+      showAllSlides();
     }
   }
+
+  syncCarousel();
+  carouselMQ.addEventListener('change', syncCarousel);
 }
 
 // ── ACTIVE NAV LINK (SCROLL SPY) ─────────────────────────────

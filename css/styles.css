@@ -336,18 +336,31 @@ section { padding: 80px 48px; }
    ============================================================ */
 .mobile-book-bar { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 240; background: linear-gradient(180deg, rgba(154,205,50,0) 0%, rgba(10,10,10,0.95) 40%); backdrop-filter: blur(8px); padding: 16px; border-top: 2px solid var(--green); }
 .mobile-book-bar-inner { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
-.mobile-call-btn, .mobile-sms-btn, .mobile-book-btn { flex: 1; padding: 12px 16px; font-size: 14px; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; transition: all var(--transition-fast); text-decoration: none; text-align: center; display: block; }
+/* NOTE: the booking bar's primary button is .bookbar-book-btn, NOT
+   .mobile-book-btn — that class belongs to the mobile nav menu, and sharing it
+   leaked `flex: 1` into the menu's flex-column, stretching its Book Now link. */
+.mobile-call-btn, .mobile-sms-btn, .bookbar-book-btn { flex: 1; padding: 12px 10px; font-size: 13px; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; transition: all var(--transition-fast); text-decoration: none; text-align: center; display: block; white-space: nowrap; }
 .mobile-call-btn { background: transparent; border: 1.5px solid var(--green); color: var(--green); }
 .mobile-call-btn:active { background: rgba(154,205,50,0.15); }
 .mobile-sms-btn { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); }
 .mobile-sms-btn:active { background: rgba(200,149,42,0.15); }
-.mobile-book-btn { background: var(--green); color: var(--black); font-size: 15px; }
-.mobile-book-btn:active { background: var(--green-bright); }
+.bookbar-book-btn { background: var(--green); color: var(--black); font-size: 14px; }
+.bookbar-book-btn:active { background: var(--green-bright); }
 
 @media (max-width: 900px) {
   .mobile-book-bar { display: block; }
+  /* Reserve room for the fixed bar so it never covers the end of the footer. */
+  body { padding-bottom: 84px; }
+  /* NOTE: .wa-float is hidden for this breakpoint further down, immediately
+     after its base rule — placing it here would lose on source order. */
+  /* One column, and every slide shares that single grid cell so the carousel JS
+     can cross-fade between them. A previous `opacity: 1 !important` here beat
+     the JS's inline styles and silently made the carousel inert.
+     Only the first slide shows by default so the stack never renders on top of
+     itself if JS is blocked or errors; the JS then drives it via inline styles. */
   .testimonials-carousel { grid-template-columns: 1fr; }
-  .testimonial-slide { opacity: 1 !important; }
+  .testimonial-slide { grid-area: 1 / 1; opacity: 0; }
+  .testimonial-slide:first-child { opacity: 1; }
   .testimonials-section { padding: 48px 28px; }
 }
 
@@ -756,6 +769,14 @@ section { padding: 80px 48px; }
 /* Don't paint the float over the mobile menu overlay. */
 body.menu-open .wa-float { display: none; }
 .wa-float svg { width: 28px; height: 28px; fill: white; }
+
+/* Below 900px the sticky booking bar carries its own WhatsApp button, and the
+   float (z-index 300) would sit on top of the bar (240) covering BOOK NOW and
+   swallowing taps meant for it. Must come after the base .wa-float rule above:
+   a media query adds no specificity, so source order decides the winner. */
+@media (max-width: 900px) {
+  .wa-float { display: none; }
+}
 
 /* ============================================================
    FOOTER
