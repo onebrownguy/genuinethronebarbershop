@@ -116,11 +116,33 @@
     meta.className = 'current-meta' + (d.stale ? ' warn' : '');
   }
 
+  // Say WHY it failed, and what to do about it. A barber mid-shift needs to
+  // tell "my signal dropped" apart from "the server is down" apart from
+  // "I opened a saved copy of this file instead of the website".
+  function failureText(status) {
+    if (location.protocol === 'file:') {
+      return 'Open this from the website, not a saved file';
+    }
+    if (navigator.onLine === false) {
+      return 'No internet connection - reconnect and retry';
+    }
+    if (status) {
+      return 'Server error (' + status + ') - try again shortly';
+    }
+    return 'Cannot reach the server - check your signal';
+  }
+
   function load() {
     fetch('/api/status', { cache: 'no-store' })
-      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (!r.ok) { var e = new Error('http'); e.status = r.status; throw e; }
+        return r.json();
+      })
       .then(render)
-      .catch(function () { cur.textContent = 'Could not load'; });
+      .catch(function (e) {
+        cur.textContent = failureText(e && e.status);
+        meta.textContent = '';
+      });
   }
 
   function setDisabled(v) {
@@ -150,12 +172,25 @@
         body: JSON.stringify(body)
       })
         .then(function (r) {
-          if (r.status === 401) throw new Error('Wrong staff code');
-          if (!r.ok) throw new Error('Update failed (' + r.status + ')');
+          var err;
+          if (r.status === 401) {
+            err = new Error('Wrong staff code - nothing was saved');
+            err.handled = true;
+            throw err;
+          }
+          if (!r.ok) {
+            err = new Error('Not saved - server error (' + r.status + ')');
+            err.handled = true;
+            throw err;
+          }
           return r.json();
         })
         .then(function () { say('Updated - the site is showing this now', true); load(); })
-        .catch(function (e) { say(e.message, false); })
+        .catch(function (e) {
+          // Every failure here must read as "not saved" — a barber who thinks
+          // the tap landed will leave a stale status on the site.
+          say(e && e.handled ? e.message : 'Not saved - ' + failureText(), false);
+        })
         .then(function () { setDisabled(false); });
     });
   });
