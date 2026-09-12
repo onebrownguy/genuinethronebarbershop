@@ -39,6 +39,8 @@
     #msg.err{display:block;background:rgba(224,83,61,.15);color:var(--red)}
     .note{margin-top:18px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center}
     a{color:var(--green)}
+    th.hrs,td.hrs{white-space:nowrap;padding-left:14px}
+    input.tm{background:var(--panel);border:1px solid rgba(255,255,255,.2);border-radius:4px;color:var(--white);font-family:inherit;font-size:13px;padding:5px 6px;width:98px}
   </style>
 </head>
 <body>
@@ -128,6 +130,10 @@
       if (i === d.dayIndex) th.className = 'is-today';
       head.appendChild(th);
     });
+    var thHours = document.createElement('th');
+    thHours.textContent = 'Hours (optional)';
+    thHours.className = 'hrs';
+    head.appendChild(thHours);
 
     body.textContent = '';
     state.barbers.forEach(function (b) {
@@ -149,6 +155,30 @@
         td.appendChild(cb);
         tr.appendChild(td);
       });
+
+      // Optional per-barber hours. Blank means "same as shop hours (10-8)".
+      var h = (d.hours && d.hours[b.key]) || null;
+      var tdH = document.createElement('td');
+      tdH.className = 'hrs';
+      var start = document.createElement('input');
+      start.type = 'time';
+      start.className = 'tm';
+      start.dataset.barber = b.key;
+      start.dataset.edge = 'start';
+      start.value = h ? h.start : '';
+      start.setAttribute('aria-label', b.name + ' start time');
+      var dash = document.createElement('span');
+      dash.textContent = ' – ';
+      var end = document.createElement('input');
+      end.type = 'time';
+      end.className = 'tm';
+      end.dataset.barber = b.key;
+      end.dataset.edge = 'end';
+      end.value = h ? h.end : '';
+      end.setAttribute('aria-label', b.name + ' end time');
+      tdH.appendChild(start); tdH.appendChild(dash); tdH.appendChild(end);
+      tr.appendChild(tdH);
+
       body.appendChild(tr);
     });
   }
@@ -174,6 +204,21 @@
     return days;
   }
 
+  function collectHours() {
+    var hours = {};
+    Array.prototype.forEach.call(document.querySelectorAll("#body input.tm"), function (inp) {
+      if (!inp.value) return;
+      var k = inp.dataset.barber;
+      hours[k] = hours[k] || {};
+      hours[k][inp.dataset.edge] = inp.value;
+    });
+    // Only send complete start+end pairs; the API drops half-formed ones anyway.
+    Object.keys(hours).forEach(function (k) {
+      if (!hours[k].start || !hours[k].end) delete hours[k];
+    });
+    return hours;
+  }
+
   document.getElementById('savepin').addEventListener('click', function () {
     var v = pin.value.trim();
     if (!v) return;
@@ -193,7 +238,7 @@
     fetch('/api/roster', {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'authorization': 'Bearer ' + t },
-      body: JSON.stringify({ days: collect() })
+      body: JSON.stringify({ days: collect(), hours: collectHours() })
     })
       .then(function (r) {
         var err;

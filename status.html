@@ -38,6 +38,17 @@
     #msg.ok{display:block;background:rgba(154,205,50,.15);color:var(--green)}
     #msg.err{display:block;background:rgba(224,83,61,.15);color:var(--red)}
     .note{margin-top:20px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center}
+    .barbers{margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12)}
+    .sec-h{font-size:15px;text-transform:uppercase;letter-spacing:2px}
+    .sec-sub{color:var(--muted);font-size:12.5px;margin:5px 0 14px;line-height:1.5}
+    .brow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+    .bname{flex:1 1 110px;font-weight:700;font-size:15px;min-width:110px}
+    .bname small{display:block;font-weight:400;font-size:12px;margin-top:2px}
+    .bfree{color:var(--green)}
+    .bbusy{color:var(--gold)}
+    .blk{padding:9px 12px;font-size:13px;font-weight:700;border-radius:5px;cursor:pointer;font-family:inherit;border:1.5px solid var(--gold);background:transparent;color:var(--gold)}
+    .blk:disabled{opacity:.45}
+    .blk.free{border-color:var(--green);color:var(--green)}
   </style>
 </head>
 <body>
@@ -62,6 +73,12 @@
   </div>
 
   <div id="msg"></div>
+
+  <section class="barbers">
+    <h2 class="sec-h">Taking a walk-in?</h2>
+    <p class="sec-sub">Block yourself off so the site stops showing you as free. It clears itself when the time is up.</p>
+    <div id="barberList"></div>
+  </section>
 
   <div class="pinrow">
     <label for="pin">Staff code</label>
@@ -195,8 +212,100 @@
     });
   });
 
+  // ── Per-barber block-off ───────────────────────────────────
+  var BLOCKS = [30, 45, 60];
+  var listEl = document.getElementById('barberList');
+
+  function renderBarbers(roster, busy) {
+    var onToday = {};
+    (roster.working || []).forEach(function (w) { onToday[w.key] = true; });
+    listEl.textContent = '';
+
+    (roster.barbers || []).forEach(function (b) {
+      var blocked = busy.busy && busy.busy[b.key];
+      var row = document.createElement('div');
+      row.className = 'brow';
+
+      var name = document.createElement('div');
+      name.className = 'bname';
+      name.textContent = b.name;
+      var sub = document.createElement('small');
+      if (blocked) {
+        sub.className = 'bbusy';
+        sub.textContent = 'With a walk-in - ' + blocked.minutesLeft + ' min left';
+      } else if (!roster.hasRoster) {
+        sub.className = '';
+        sub.textContent = 'Free (roster not set)';
+      } else if (onToday[b.key]) {
+        sub.className = 'bfree';
+        sub.textContent = 'Free - on today';
+      } else {
+        sub.className = '';
+        sub.textContent = 'Not scheduled today';
+      }
+      name.appendChild(sub);
+      row.appendChild(name);
+
+      if (blocked) {
+        var free = document.createElement('button');
+        free.className = 'blk free';
+        free.type = 'button';
+        free.textContent = 'Free now';
+        free.addEventListener('click', function () { setBusy(b.key, null, free); });
+        row.appendChild(free);
+      } else {
+        BLOCKS.forEach(function (m) {
+          var btn = document.createElement('button');
+          btn.className = 'blk';
+          btn.type = 'button';
+          btn.textContent = m + 'm';
+          btn.setAttribute('aria-label', 'Block ' + b.name + ' for ' + m + ' minutes');
+          btn.addEventListener('click', function () { setBusy(b.key, m, btn); });
+          row.appendChild(btn);
+        });
+      }
+      listEl.appendChild(row);
+    });
+  }
+
+  function setBusy(key, minutes, btn) {
+    var t = token();
+    if (!t) { say('Enter your staff code below first', false); return; }
+    btn.disabled = true;
+    var body = minutes === null ? { barber: key, clear: true } : { barber: key, minutes: minutes };
+
+    fetch('/api/busy', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'authorization': 'Bearer ' + t },
+      body: JSON.stringify(body)
+    })
+      .then(function (r) {
+        var err;
+        if (r.status === 401) { err = new Error('Wrong staff code - nothing was saved'); err.handled = true; throw err; }
+        if (!r.ok) { err = new Error('Not saved - server error (' + r.status + ')'); err.handled = true; throw err; }
+        return r.json();
+      })
+      .then(function () {
+        say(minutes === null ? 'Marked free' : 'Blocked off for ' + minutes + ' min', true);
+        loadBarbers();
+      })
+      .catch(function (e) { say(e && e.handled ? e.message : 'Not saved - ' + failureText(), false); })
+      .then(function () { btn.disabled = false; });
+  }
+
+  function loadBarbers() {
+    Promise.all([
+      fetch('/api/roster', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { barbers: [], working: [] }; }),
+      fetch('/api/busy',   { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { busy: {} }; })
+    ])
+      .then(function (res) { renderBarbers(res[0], res[1]); })
+      .catch(function () { listEl.textContent = failureText(); });
+  }
+
   load();
+  loadBarbers();
   setInterval(load, 60000);
+  setInterval(loadBarbers, 60000);
 })();
 </script>
 </body>

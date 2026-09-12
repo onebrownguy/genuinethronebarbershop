@@ -62,7 +62,8 @@ export async function onRequestGet({ env }) {
     // did not exist, rather than showing an empty or wrong list.
   }
 
-  const days = (record && record.days) || null;
+  const days  = (record && record.days) || null;
+  const hours = (record && record.hours) || {};
   const working = days
     ? BARBERS.filter(b => Array.isArray(days[b.key]) && days[b.key].includes(dayIndex))
     : [];
@@ -72,9 +73,11 @@ export async function onRequestGet({ env }) {
     dayIndex,
     dayName:     DAY_NAMES[dayIndex],
     dayNameEs:   DAY_ES[dayIndex],
-    working:     working.map(b => ({ key: b.key, name: b.name })),
+    // hours are optional per barber; null means "same as shop hours"
+    working:     working.map(b => ({ key: b.key, name: b.name, hours: hours[b.key] || null })),
     barbers:     BARBERS,
     days:        days || {},
+    hours,
     updatedAt:   record?.updatedAt ?? null,
   }, 300);
 }
@@ -119,7 +122,22 @@ export async function onRequestPost({ request, env }) {
     days[b.key] = cleaned;
   }
 
-  const record = { days, updatedAt: Date.now() };
+  // Optional per-barber start/end, e.g. a barber who only works mornings.
+  // Anything not a valid HH:MM pair is dropped rather than stored half-formed.
+  const TIME = /^([01]\d|2[0-3]):([0-5]\d)$/;
+  const incomingHours = (payload && payload.hours) || {};
+  const hours = {};
+  for (const b of BARBERS) {
+    const h = incomingHours[b.key];
+    if (!h || typeof h !== 'object') continue;
+    const start = String(h.start || '');
+    const end   = String(h.end || '');
+    if (TIME.test(start) && TIME.test(end) && start < end) {
+      hours[b.key] = { start, end };
+    }
+  }
+
+  const record = { days, hours, updatedAt: Date.now() };
   await env.SHOP_STATUS.put(KEY, JSON.stringify(record));
 
   return json({ ok: true, ...record });

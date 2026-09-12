@@ -350,31 +350,55 @@ sections.forEach(s => spyObserver.observe(s));
   var el = document.getElementById('rosterToday');
   if (!el) return;
 
-  fetch('/api/roster', { cache: 'no-store' })
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (d) {
+  var MID = ' \u00B7 ';
+
+  function nameEn(w, busy) {
+    var b = busy[w.key];
+    if (b) return w.name + ' (with a walk-in, ~' + b.minutesLeft + 'm)';
+    if (w.hours) return w.name + ' (' + w.hours.start + '\u2013' + w.hours.end + ')';
+    return w.name;
+  }
+
+  function nameEs(w, busy) {
+    var b = busy[w.key];
+    if (b) return w.name + ' (con cliente, ~' + b.minutesLeft + 'm)';
+    if (w.hours) return w.name + ' (' + w.hours.start + '\u2013' + w.hours.end + ')';
+    return w.name;
+  }
+
+  function span(cls, text, lang) {
+    var s = document.createElement('span');
+    s.className = cls;
+    s.textContent = text;
+    if (lang) s.setAttribute('lang', lang);
+    return s;
+  }
+
+  function draw() {
+    Promise.all([
+      fetch('/api/roster', { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; }),
+      // Chair state lives in its own endpoint because it changes by the minute
+      // while the roster changes monthly. A failure here must not hide the
+      // roster line, so it resolves to "nobody blocked" rather than rejecting.
+      fetch('/api/busy', { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : { busy: {} }; })
+        .catch(function () { return { busy: {} }; })
+    ]).then(function (res) {
+      var d = res[0];
+      var busy = (res[1] && res[1].busy) || {};
       if (!d || !d.hasRoster || !d.working || !d.working.length) return;
 
-      var names = d.working.map(function (w) { return w.name; }).join(' \u00B7 ');
       el.textContent = '';
-
-      var label = document.createElement('span');
-      label.className = 'in-label';
-      label.textContent = 'In today \u2014 ' + d.dayName + ': ';
-
-      var who = document.createElement('span');
-      who.className = 'in-names';
-      who.textContent = names;
-
-      var es = document.createElement('span');
-      es.className = 'in-es';
-      es.setAttribute('lang', 'es');
-      es.textContent = 'Hoy ' + d.dayNameEs + ': ' + names;
-
-      el.appendChild(label);
-      el.appendChild(who);
-      el.appendChild(es);
+      el.appendChild(span('in-label', 'In today \u2014 ' + d.dayName + ': '));
+      el.appendChild(span('in-names', d.working.map(function (w) { return nameEn(w, busy); }).join(MID)));
+      el.appendChild(span('in-es', 'Hoy ' + d.dayNameEs + ': ' +
+        d.working.map(function (w) { return nameEs(w, busy); }).join(MID), 'es'));
       el.hidden = false;
-    })
-    .catch(function () { /* stay hidden — section looks as it did before */ });
+    });
+  }
+
+  draw();
+  setInterval(draw, 90000);   // keep the "with a walk-in" countdown roughly current
 })();
