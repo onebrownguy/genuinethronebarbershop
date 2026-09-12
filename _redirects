@@ -1,0 +1,25 @@
+# Legacy URLs from the previous Wix site at www.genuinethrone.com.
+# They are in Google's index and in Wix's sitemap, so without these rules every
+# one of them 404s the moment the domain cuts over to Cloudflare Pages.
+# 301 (permanent) so ranking signals consolidate onto the new single-page site.
+# Source of truth: https://www.genuinethrone.com/sitemap.xml (captured 2026-09-12).
+
+# --- Real content -> nearest section of the new page ---
+# /team-1 genuinely listed Cruz, Santiago, Julio and Gzalez.
+/team-1                   /#barbers   301
+/portfolio                /#gallery   301
+/contact-10               /#book      301
+
+# --- Language variants ---
+# es.genuinethrone.com resolved to /es. The new site is bilingual inline, so
+# there is no separate Spanish route to land on.
+/es                       /           301
+/es/*                     /           301
+/en                       /           301
+/en/*                     /           301
+
+# --- Wix template leftovers ---
+# Placeholder portfolio ("Project Title 1-6") and a demo store product.
+/portfolio-collections/*  /           301
+/product-page/*           /           301
+/category/*               /           301
