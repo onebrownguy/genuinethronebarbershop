@@ -994,3 +994,21 @@ footer {
 .barber-tag      { font-size: clamp(8px, 0.72vw, 10px); letter-spacing: clamp(1px, 0.18vw, 3px); }
 .barber-name     { font-size: clamp(17px, 1.85vw, 26px); }
 .barber-book-btn { font-size: clamp(11px, 1vw, 14px); letter-spacing: 1px; padding: 8px 10px; }
+
+/* ============================================================
+   WEEKLY ROSTER — "IN TODAY"
+   Progressive enhancement, same contract as the walk-in badge: the element
+   ships hidden and empty, and JS only reveals it when /api/roster returns a
+   roster for today. No JS, failed fetch or unset roster => the section looks
+   exactly as it did before this existed.
+   ============================================================ */
+.roster-today {
+  margin-top: 18px;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
+  font-size: 13px; letter-spacing: 1px;
+  color: var(--text-muted);
+}
+.roster-today[hidden] { display: none; }
+.roster-today .in-label { color: var(--green); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; }
+.roster-today .in-names { color: var(--white); }
+.roster-today .in-es { display: block; margin-top: 3px; font-size: 12px; opacity: .75; }

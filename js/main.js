@@ -339,3 +339,42 @@ sections.forEach(s => spyObserver.observe(s));
   setInterval(load, 90000);
   window.addEventListener('resize', syncBarPadding, { passive: true });
 })();
+
+// ── WEEKLY ROSTER ("IN TODAY") ────────────────────────────────
+// Same progressive-enhancement contract as the walk-in badge: the element
+// ships hidden, and this only reveals it when the API reports a roster for
+// today. Deliberately does NOT dim off-duty barber cards — the filter buttons
+// already own card.style.opacity, and two writers on one property is how the
+// carousel bug happened.
+(function () {
+  var el = document.getElementById('rosterToday');
+  if (!el) return;
+
+  fetch('/api/roster', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d || !d.hasRoster || !d.working || !d.working.length) return;
+
+      var names = d.working.map(function (w) { return w.name; }).join(' \u00B7 ');
+      el.textContent = '';
+
+      var label = document.createElement('span');
+      label.className = 'in-label';
+      label.textContent = 'In today \u2014 ' + d.dayName + ': ';
+
+      var who = document.createElement('span');
+      who.className = 'in-names';
+      who.textContent = names;
+
+      var es = document.createElement('span');
+      es.className = 'in-es';
+      es.setAttribute('lang', 'es');
+      es.textContent = 'Hoy ' + d.dayNameEs + ': ' + names;
+
+      el.appendChild(label);
+      el.appendChild(who);
+      el.appendChild(es);
+      el.hidden = false;
+    })
+    .catch(function () { /* stay hidden — section looks as it did before */ });
+})();
