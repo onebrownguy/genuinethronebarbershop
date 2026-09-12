@@ -384,7 +384,7 @@ section { padding: 80px 48px; }
 }
 .filter-btn:hover, .filter-btn.active { border-color: var(--green); color: var(--green); background: rgba(154,205,50,0.08); }
 .barbers-grid {
-  display: grid; grid-template-columns: repeat(5, minmax(160px, 1fr)); gap: 2px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 2px;
 }
 
 .barber-card {
@@ -425,17 +425,6 @@ section { padding: 80px 48px; }
   font-family: 'Bebas Neue', sans-serif; font-size: 26px;
   letter-spacing: 2px; color: var(--white); line-height: 1; font-weight: 400;
 }
-.barber-specialty {
-  font-family: 'Jost', 'Barlow Condensed', sans-serif;
-  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--green); margin-top: 3px;
-}
-.barber-reviews { display: flex; align-items: center; gap: 7px; margin-top: 8px; }
-.barber-stars   { color: var(--gold); font-size: 11px; }
-.barber-count   {
-  font-family: 'Jost', 'Barlow Condensed', sans-serif;
-  font-size: 11px; color: var(--text-muted);
-}
 .barber-book-btn {
   margin-top: 12px; background: var(--green); color: var(--black); border: none;
   padding: 9px 16px; font-family: 'Bebas Neue', sans-serif; font-size: 14px;
@@ -473,10 +462,6 @@ section { padding: 80px 48px; }
 .service-card:hover::before { transform: scaleX(1); }
 .service-card:hover {
   border-color: rgba(154,205,50,0.22); background: rgba(154,205,50,0.03);
-}
-.service-num {
-  font-family: 'Bebas Neue', sans-serif; font-size: 56px;
-  color: rgba(154,205,50,0.07); line-height: 1; position: absolute; top: 16px; right: 20px;
 }
 .service-name {
   font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px;
@@ -687,10 +672,6 @@ section { padding: 80px 48px; }
   transition: border-color var(--transition-med), background var(--transition-med);
 }
 .perk:hover { border-color: rgba(154,205,50,0.2); background: rgba(154,205,50,0.02); }
-.perk-num {
-  font-family: 'Bebas Neue', sans-serif; font-size: 44px;
-  color: rgba(154,205,50,0.06); position: absolute; top: 10px; right: 14px; line-height: 1;
-}
 .perk-icon { font-size: 24px; margin-bottom: 10px; }
 .perk-title {
   font-family: 'Jost', 'Barlow Condensed', sans-serif;
@@ -977,3 +958,39 @@ footer {
 .bookbar-status.is-wait   .dot { background: var(--gold); }
 .bookbar-status.is-closed { color: var(--text-muted); }
 .bookbar-status.is-closed .dot { background: var(--text-muted); }
+
+/* ============================================================
+   NAV — INTERMEDIATE WIDTHS (901px – 1140px)
+   The full link row needs ~1139px to lay out, but the mobile menu does not
+   take over until 900px. In the gap between, links wrapped mid-word: "Book
+   Now" broke onto two lines and spilled outside its green pill (59px tall
+   instead of ~20px). Tighten spacing across that range, and never allow a
+   break inside a link. The 900px breakpoint is deliberately NOT moved — it is
+   shared with the sticky booking bar and the carousel's matchMedia in JS, and
+   changing it in CSS alone would desync them.
+   ============================================================ */
+.nav-links a { white-space: nowrap; }
+
+@media (min-width: 901px) and (max-width: 1140px) {
+  nav,
+  nav.scrolled { padding-left: 18px; padding-right: 18px; }
+  .nav-logo { gap: 8px; }
+  .nav-logo-img { width: 36px; height: 36px; }
+  .nav-brand { font-size: 16px; letter-spacing: 2px; }
+  .nav-brand span { font-size: 9px; letter-spacing: 2px; }
+  .nav-links { gap: 12px; }
+  .nav-links a { font-size: 11px; letter-spacing: 1.2px; }
+  .nav-book { padding: 8px 12px; }
+}
+
+/* ============================================================
+   BARBER CARDS — FLUID TEXT
+   The overlay text used fixed px sizes while the grid squeezed cards down to
+   160px, so names and tags wrapped and spilled up out of the card. The grid
+   now reflows (auto-fit) and these clamp() sizes let the remaining text shrink
+   with it, so nothing overflows at any width.
+   ============================================================ */
+.barber-overlay  { padding: clamp(12px, 1.4vw, 22px) clamp(10px, 1.2vw, 18px); }
+.barber-tag      { font-size: clamp(8px, 0.72vw, 10px); letter-spacing: clamp(1px, 0.18vw, 3px); }
+.barber-name     { font-size: clamp(17px, 1.85vw, 26px); }
+.barber-book-btn { font-size: clamp(11px, 1vw, 14px); letter-spacing: 1px; padding: 8px 10px; }
