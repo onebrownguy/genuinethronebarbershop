@@ -256,3 +256,86 @@ const spyObserver = new IntersectionObserver((entries) => {
 }, { rootMargin: '-40% 0px -55% 0px' });
 
 sections.forEach(s => spyObserver.observe(s));
+
+// ── WALK-IN LIVE STATUS ───────────────────────────────────────
+// Progressive enhancement. The hero stat and sticky bar ship with the static
+// "Walk-Ins Welcome" copy; this only overwrites it when /api/status reports
+// live:true (fresh staff update, inside business hours). Any failure — no JS,
+// network error, stale record, after close — leaves the static copy alone.
+(function () {
+  var stat  = document.getElementById('walkinStat');
+  var strip = document.getElementById('bookbarStatus');
+  var bar   = document.querySelector('.mobile-book-bar');
+  if (!stat && !strip) return;
+
+  var CHECK = '\u2713';        // check mark
+  var DASH  = '\u2014';        // em dash
+
+  var COPY = {
+    open:   { num: CHECK, label: 'Walk In Now',       en: 'Walk in now ' + DASH + ' no wait', es: 'Pasa ahora, sin espera' },
+    closed: { num: DASH,  label: 'Appointments Only', en: 'Appointments only right now',      es: 'Solo con cita ahora' }
+  };
+
+  // The bar is fixed, so the body reserves room for it. Its height changes when
+  // the status strip appears, so re-measure instead of hard-coding a value.
+  function syncBarPadding() {
+    if (!bar) return;
+    if (getComputedStyle(bar).display === 'none') {
+      document.body.style.paddingBottom = '';
+      return;
+    }
+    document.body.style.paddingBottom = (bar.offsetHeight + 4) + 'px';
+  }
+
+  function render(d) {
+    if (!d || !d.live) return;                    // uncertain => keep static copy
+    var state = d.state;
+    if (state !== 'open' && state !== 'wait' && state !== 'closed') return;
+
+    var isWait = state === 'wait';
+    var c      = COPY[state] || {};
+    var num    = isWait ? d.waitMinutes + 'm' : c.num;
+    var label  = isWait ? 'Walk-In Wait' : c.label;
+    var en     = isWait ? 'About ' + d.waitMinutes + ' min wait' : c.en;
+    var es     = isWait ? '~' + d.waitMinutes + ' min de espera'  : c.es;
+
+    if (stat) {
+      var n = stat.querySelector('.stat-num');
+      var l = stat.querySelector('.stat-label');
+      if (n) n.textContent = num;
+      if (l) l.textContent = label;
+      stat.classList.remove('is-open', 'is-wait', 'is-closed');
+      stat.classList.add('is-' + state);
+    }
+
+    if (strip) {
+      strip.classList.remove('is-open', 'is-wait', 'is-closed');
+      strip.classList.add('is-' + state);
+      strip.textContent = '';
+      var dot = document.createElement('span');
+      dot.className = 'dot';
+      var a = document.createElement('span');
+      a.textContent = en;
+      var b = document.createElement('span');
+      b.className = 'es';
+      b.setAttribute('lang', 'es');
+      b.textContent = es;
+      strip.appendChild(dot);
+      strip.appendChild(a);
+      strip.appendChild(b);
+      strip.hidden = false;
+      syncBarPadding();
+    }
+  }
+
+  function load() {
+    fetch('/api/status', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(render)
+      .catch(function () { /* stay on the static copy */ });
+  }
+
+  load();
+  setInterval(load, 90000);
+  window.addEventListener('resize', syncBarPadding, { passive: true });
+})();

@@ -945,3 +945,35 @@ footer {
   .barbers-grid { grid-template-columns: 1fr; }
   .hero-stats { flex-direction: column; gap: 12px; }
 }
+
+/* ============================================================
+   WALK-IN LIVE STATUS
+   Progressive enhancement only: the markup ships with the static
+   "Walk-Ins Welcome" copy, and JS recolours/retitles it ONLY when
+   /api/status returns fresh data. No JS, failed fetch, stale record
+   or after-hours => the static claim stays exactly as it was.
+   ============================================================ */
+#walkinStat.is-open   .stat-num { color: var(--green); }
+#walkinStat.is-wait   .stat-num { color: var(--gold); }
+#walkinStat.is-closed .stat-num { color: var(--text-muted); }
+
+/* Live strip inside the mobile sticky booking bar. */
+.bookbar-status {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: 'Jost', 'Barlow Condensed', sans-serif;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; padding-bottom: 10px; text-align: center;
+}
+/* display:flex above would beat the UA [hidden] rule, so restate it. */
+.bookbar-status[hidden] { display: none; }
+.bookbar-status .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.bookbar-status .es {
+  font-weight: 400; text-transform: none; letter-spacing: 0;
+  font-size: 11px; opacity: .75;
+}
+.bookbar-status.is-open   { color: var(--green); }
+.bookbar-status.is-open   .dot { background: var(--green); box-shadow: 0 0 0 3px rgba(154,205,50,0.22); }
+.bookbar-status.is-wait   { color: var(--gold); }
+.bookbar-status.is-wait   .dot { background: var(--gold); }
+.bookbar-status.is-closed { color: var(--text-muted); }
+.bookbar-status.is-closed .dot { background: var(--text-muted); }

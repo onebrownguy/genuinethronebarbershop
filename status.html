@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walk-In Status | Genuine Throne (Staff)</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/assets/images/logo.png">
+  <!-- Self-contained: staff may open this on a weak connection mid-shift. -->
+  <style>
+    :root{--green:#9ACD32;--gold:#C8952A;--black:#0a0a0a;--panel:#1a1a1a;--white:#f5f5f0;--muted:rgba(255,255,255,.66);--red:#e0533d}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--black);color:var(--white);font-family:'Barlow',system-ui,-apple-system,sans-serif;padding:20px;max-width:520px;margin:0 auto;min-height:100vh}
+    header{text-align:center;margin-bottom:22px}
+    .logo{width:56px;height:56px;margin-bottom:10px}
+    h1{font-size:19px;text-transform:uppercase;letter-spacing:2px;font-weight:700}
+    .sub{color:var(--muted);font-size:13px;margin-top:4px}
+    .current{background:var(--panel);border:1px solid rgba(154,205,50,.25);border-radius:8px;padding:18px;text-align:center}
+    .current-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+    .current-value{font-size:26px;font-weight:700;margin-top:6px;letter-spacing:1px}
+    .current-meta{font-size:12px;color:var(--muted);margin-top:6px}
+    .warn{color:var(--gold)}
+    .btns{display:grid;gap:11px;margin-top:18px}
+    button.set{width:100%;padding:20px 16px;font-size:17px;font-weight:700;border:none;border-radius:8px;cursor:pointer;font-family:inherit;letter-spacing:.5px;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .b-open{background:var(--green);color:#0a0a0a}
+    .b-wait{background:transparent;border:2px solid var(--gold);color:var(--gold)}
+    .b-closed{background:transparent;border:2px solid var(--red);color:var(--red)}
+    button.set:active{transform:scale(.985)}
+    button.set:disabled{opacity:.45}
+    .hint{font-size:14px;font-weight:400;opacity:.75}
+    .pinrow{margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12)}
+    label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+    input{width:100%;padding:13px;font-size:16px;background:var(--panel);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:var(--white);font-family:inherit}
+    .row{display:flex;gap:8px}
+    .row input{flex:1}
+    .row button{padding:13px 18px;background:var(--white);color:#0a0a0a;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit}
+    #msg{margin-top:14px;padding:11px;border-radius:6px;font-size:14px;text-align:center;display:none}
+    #msg.ok{display:block;background:rgba(154,205,50,.15);color:var(--green)}
+    #msg.err{display:block;background:rgba(224,83,61,.15);color:var(--red)}
+    .note{margin-top:20px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center}
+  </style>
+</head>
+<body>
+  <header>
+    <img class="logo" src="/assets/images/logo.png" alt="">
+    <h1>Walk-In Status</h1>
+    <div class="sub">Staff only &middot; updates the website instantly</div>
+  </header>
+
+  <div class="current">
+    <div class="current-label">Showing on site right now</div>
+    <div class="current-value" id="cur">Loading&hellip;</div>
+    <div class="current-meta" id="meta"></div>
+  </div>
+
+  <div class="btns">
+    <button class="set b-open"   data-state="open">Walk right in <span class="hint">no wait</span></button>
+    <button class="set b-wait"   data-state="wait" data-wait="15">Short wait <span class="hint">~15 min</span></button>
+    <button class="set b-wait"   data-state="wait" data-wait="30">Busy <span class="hint">~30 min</span></button>
+    <button class="set b-wait"   data-state="wait" data-wait="45">Very busy <span class="hint">~45+ min</span></button>
+    <button class="set b-closed" data-state="closed">No walk-ins <span class="hint">appointments only</span></button>
+  </div>
+
+  <div id="msg"></div>
+
+  <div class="pinrow">
+    <label for="pin">Staff code</label>
+    <div class="row">
+      <input id="pin" type="password" inputmode="text" autocomplete="current-password" placeholder="Enter staff code">
+      <button id="savepin" type="button">Save</button>
+    </div>
+  </div>
+
+  <p class="note">
+    The badge clears itself automatically after 90 minutes and outside 10AM&ndash;8PM,
+    so you never have to remember to switch it off at close.
+  </p>
+
+<script>
+(function () {
+  var TOKEN_KEY = 'gt_staff_token';
+  var msg  = document.getElementById('msg');
+  var cur  = document.getElementById('cur');
+  var meta = document.getElementById('meta');
+  var pin  = document.getElementById('pin');
+  var setButtons = document.querySelectorAll('button.set');
+
+  function token() {
+    try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; }
+  }
+
+  function say(text, ok) {
+    msg.textContent = text;
+    msg.className = ok ? 'ok' : 'err';
+    clearTimeout(say.timer);
+    say.timer = setTimeout(function () { msg.className = ''; }, 4000);
+  }
+
+  function describe(d) {
+    if (!d.withinHours) return 'Closed (outside 10AM-8PM)';
+    if (!d.live) return 'Not set - site shows "Walk-Ins Welcome"';
+    if (d.state === 'open') return 'Walk right in - no wait';
+    if (d.state === 'closed') return 'No walk-ins right now';
+    return 'About ' + d.waitMinutes + ' min wait';
+  }
+
+  function render(d) {
+    cur.textContent = describe(d);
+    var bits = [];
+    if (d.updatedAt) {
+      bits.push('Updated ' + (d.ageMinutes < 1 ? 'just now' : d.ageMinutes + ' min ago'));
+    }
+    if (d.stale) bits.push('expired - site fell back to default');
+    if (!bits.length) { meta.textContent = ''; return; }
+    meta.textContent = bits.join(' · ');
+    meta.className = 'current-meta' + (d.stale ? ' warn' : '');
+  }
+
+  function load() {
+    fetch('/api/status', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(render)
+      .catch(function () { cur.textContent = 'Could not load'; });
+  }
+
+  function setDisabled(v) {
+    Array.prototype.forEach.call(setButtons, function (b) { b.disabled = v; });
+  }
+
+  document.getElementById('savepin').addEventListener('click', function () {
+    var v = pin.value.trim();
+    if (!v) return;
+    try { localStorage.setItem(TOKEN_KEY, v); } catch (e) {}
+    pin.value = '';
+    say('Staff code saved on this device', true);
+  });
+
+  Array.prototype.forEach.call(setButtons, function (btn) {
+    btn.addEventListener('click', function () {
+      var t = token();
+      if (!t) { say('Enter your staff code below first', false); return; }
+
+      var body = { state: btn.dataset.state };
+      if (btn.dataset.wait) body.waitMinutes = Number(btn.dataset.wait);
+
+      setDisabled(true);
+      fetch('/api/status', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'authorization': 'Bearer ' + t },
+        body: JSON.stringify(body)
+      })
+        .then(function (r) {
+          if (r.status === 401) throw new Error('Wrong staff code');
+          if (!r.ok) throw new Error('Update failed (' + r.status + ')');
+          return r.json();
+        })
+        .then(function () { say('Updated - the site is showing this now', true); load(); })
+        .catch(function (e) { say(e.message, false); })
+        .then(function () { setDisabled(false); });
+    });
+  });
+
+  load();
+  setInterval(load, 60000);
+})();
+</script>
+</body>
+</html>

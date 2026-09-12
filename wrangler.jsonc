@@ -1,0 +1,13 @@
+{
+  // Cloudflare Pages config. Exists so the walk-in status Function gets its KV
+  // binding on deploy; the site itself is still plain static files.
+  "name": "genuine-throne",
+  "compatibility_date": "2026-09-12",
+  "pages_build_output_dir": ".",
+  "kv_namespaces": [
+    {
+      "binding": "SHOP_STATUS",
+      "id": "0fb462e643524fe687567af8105c3c14"
+    }
+  ]
+}
