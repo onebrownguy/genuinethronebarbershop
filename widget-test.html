@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booksy Widget Embed Test</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    :root{--green:#9ACD32;--gold:#C8952A;--black:#0a0a0a;--panel:#151515;--white:#f5f5f0;--muted:rgba(255,255,255,.66)}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--black);color:var(--white);font-family:system-ui,-apple-system,sans-serif;padding:20px}
+    h1{font-size:20px;margin-bottom:6px}
+    p.lede{color:var(--muted);font-size:14px;margin-bottom:20px;max-width:70ch;line-height:1.6}
+    .grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+    .card{background:var(--panel);border:1px solid rgba(154,205,50,.25);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+    .card h2{font-size:15px;padding:12px 14px;background:rgba(154,205,50,.1);color:var(--green);display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .card h2 code{font-size:11px;color:var(--gold);font-weight:400}
+    .frame-wrap{position:relative;height:620px;background:#fff}
+    iframe{width:100%;height:100%;border:0;display:block}
+    .verdict{padding:10px 14px;font-size:13px;color:var(--muted);border-top:1px solid rgba(255,255,255,.1)}
+    .verdict b{color:var(--white)}
+    a{color:var(--green)}
+    .legend{margin-top:24px;font-size:13px;color:var(--muted);line-height:1.7;max-width:70ch}
+  </style>
+</head>
+<body>
+  <h1>Booksy widget embed test</h1>
+  <p class="lede">
+    Each frame below loads Booksy&rsquo;s own booking widget for one business ID.
+    If a frame shows that barber&rsquo;s services and open times, the embed works for them.
+    If it stays blank or shows an error, that ID has no widget enabled.
+    <strong>Check this on a phone too</strong> &mdash; that is where most walk-in traffic decides.
+  </p>
+
+  <div class="grid" id="grid"></div>
+
+  <p class="legend">
+    Widget URL pattern:
+    <code>https://booksy.com/widget-2021/instagram/index.html?country=us&amp;lang=en&amp;id=&lt;BUSINESS_ID&gt;</code><br>
+    Business IDs come from each barber&rsquo;s public Booksy profile URL. The shop&rsquo;s ID (1413101)
+    came from resolving <code>link.booksy.com/GenuineThroneBarbershop</code>.
+  </p>
+
+<script>
+(function () {
+  var TARGETS = [
+    { name: 'Genuine Throne (shop)', id: '1413101', note: 'from the shop booking link' },
+    { name: 'Edy',                   id: '1148599', note: 'already used on the site' },
+    { name: 'Cruz Sainz',            id: '287080',  note: 'from profile URL' },
+    { name: 'Santiago Blendzz',      id: '1360130', note: 'from profile URL' },
+    { name: 'Julio Cesar Gongora',   id: '933271',  note: 'from profile URL' },
+    { name: 'Gzalez',                id: '931858',  note: 'from profile URL' },
+    { name: 'CONTROL (bogus id)',    id: '999999999', note: 'should FAIL - proves the test works' }
+  ];
+
+  var grid = document.getElementById('grid');
+
+  TARGETS.forEach(function (t) {
+    var url = 'https://booksy.com/widget-2021/instagram/index.html?country=us&lang=en&id=' + t.id;
+
+    var card = document.createElement('div');
+    card.className = 'card';
+
+    var h = document.createElement('h2');
+    var nameEl = document.createElement('span');
+    nameEl.textContent = t.name;
+    var idEl = document.createElement('code');
+    idEl.textContent = 'id=' + t.id;
+    h.appendChild(nameEl);
+    h.appendChild(idEl);
+
+    var wrap = document.createElement('div');
+    wrap.className = 'frame-wrap';
+    var f = document.createElement('iframe');
+    f.src = url;
+    f.loading = 'lazy';
+    f.setAttribute('title', t.name + ' booking widget');
+    wrap.appendChild(f);
+
+    var v = document.createElement('div');
+    v.className = 'verdict';
+    var noteEl = document.createElement('span');
+    noteEl.textContent = t.note + ' — ';
+    var link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'open directly';
+    v.appendChild(noteEl);
+    v.appendChild(link);
+
+    card.appendChild(h);
+    card.appendChild(wrap);
+    card.appendChild(v);
+    grid.appendChild(card);
+  });
+})();
+</script>
+</body>
+</html>
