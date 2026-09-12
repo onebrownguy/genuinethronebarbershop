@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Chair Board | Genuine Throne (Staff)</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/assets/images/logo.png">
+  <style>
+    :root{
+      --green:#9ACD32;--green-bright:#AADD00;--gold:#C8952A;--red:#e0533d;
+      --black:#0a0a0a;--panel:#161616;--panel2:#1e1e1e;--white:#f5f5f0;--muted:rgba(255,255,255,.66);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      background:var(--black);color:var(--white);
+      font-family:'Barlow',system-ui,-apple-system,sans-serif;
+      padding:16px;display:flex;flex-direction:column;gap:14px;
+      -webkit-text-size-adjust:100%;
+    }
+
+    /* top bar */
+    .top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .top img{width:44px;height:44px}
+    .day{flex:1;min-width:180px}
+    .day-name{font-size:clamp(20px,2.6vw,30px);font-weight:700;letter-spacing:1px;line-height:1.1}
+    .day-sub{color:var(--muted);font-size:13px;margin-top:2px}
+    .shop{
+      padding:10px 16px;border-radius:8px;font-weight:700;
+      font-size:clamp(13px,1.5vw,16px);letter-spacing:1px;text-transform:uppercase;
+      border:2px solid rgba(255,255,255,.2);white-space:nowrap;
+    }
+    .shop.open{border-color:var(--green);color:var(--green)}
+    .shop.wait{border-color:var(--gold);color:var(--gold)}
+    .shop.closed{border-color:var(--red);color:var(--red)}
+
+    /* barber grid */
+    .grid{
+      flex:1;display:grid;gap:12px;align-content:start;
+      grid-template-columns:repeat(auto-fit,minmax(clamp(240px,30vw,330px),1fr));
+    }
+    .card{
+      background:var(--panel);border:2px solid rgba(255,255,255,.1);border-radius:12px;
+      padding:16px;display:flex;flex-direction:column;gap:10px;
+      transition:border-color .25s,background .25s;
+    }
+    .card.free{border-color:rgba(154,205,50,.45)}
+    .card.busy{border-color:var(--gold);background:var(--panel2)}
+    .card.off{opacity:.42}
+
+    .cname{font-size:clamp(19px,2.2vw,26px);font-weight:700;line-height:1.1}
+    .cstate{font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:700}
+    .card.free .cstate{color:var(--green)}
+    .card.busy .cstate{color:var(--gold)}
+    .card.off  .cstate{color:var(--muted)}
+    .countdown{font-size:clamp(30px,4.4vw,46px);font-weight:700;line-height:1;letter-spacing:1px;font-variant-numeric:tabular-nums}
+    .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+    .bar i{display:block;height:100%;background:var(--gold);transition:width 1s linear}
+    .hrs{font-size:12px;color:var(--muted)}
+
+    .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+    button{
+      flex:1 1 60px;padding:14px 8px;font-size:16px;font-weight:700;
+      border-radius:8px;cursor:pointer;font-family:inherit;
+      border:2px solid var(--gold);background:transparent;color:var(--gold);
+      min-height:52px;touch-action:manipulation;
+    }
+    button:active{transform:scale(.97)}
+    button:disabled{opacity:.4}
+    button.free{border-color:var(--green);background:var(--green);color:#0a0a0a;flex:1 1 100%}
+
+    /* footer */
+    .foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+    .foot a{color:var(--green)}
+    #msg{padding:8px 12px;border-radius:6px;font-weight:700;display:none}
+    #msg.ok{display:block;background:rgba(154,205,50,.15);color:var(--green)}
+    #msg.err{display:block;background:rgba(224,83,61,.15);color:var(--red)}
+    .empty{padding:40px 20px;text-align:center;color:var(--muted);line-height:1.7}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <img src="/assets/images/logo.png" alt="">
+    <div class="day">
+      <div class="day-name" id="dayName">Loading&hellip;</div>
+      <div class="day-sub" id="daySub">Chair board</div>
+    </div>
+    <div class="shop" id="shopState">&mdash;</div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div id="msg"></div>
+
+  <div class="foot">
+    <span id="foot">Updates automatically &middot; tap a time to block a chair</span>
+    <span><a href="/status">Shop status</a> &middot; <a href="/roster">Edit roster</a></span>
+  </div>
+
+<script>
+(function () {
+  var TOKEN_KEY = 'gt_staff_token';
+  var BLOCKS = [15, 30, 45, 60];
+  var REFRESH_MS = 20000;
+
+  var gridEl = document.getElementById('grid');
+  var msgEl  = document.getElementById('msg');
+
+  // Everything is anchored to the server clock. A wall tablet's clock can drift
+  // badly, and a countdown that disagrees with the server is worse than none.
+  var skew = 0;
+  var model = { working: [], barbers: [], busy: {}, hasRoster: false };
+
+  function token() {
+    try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; }
+  }
+  function now() { return Date.now() + skew; }
+
+  function say(text, ok) {
+    msgEl.textContent = text;
+    msgEl.className = ok ? 'ok' : 'err';
+    clearTimeout(say.t);
+    say.t = setTimeout(function () { msgEl.className = ''; }, 4000);
+  }
+
+  function failureText(status) {
+    if (location.protocol === 'file:') return 'Open this from the website, not a saved file';
+    if (navigator.onLine === false)    return 'No internet connection';
+    if (status)                        return 'Server error (' + status + ')';
+    return 'Cannot reach the server';
+  }
+
+  function mmss(ms) {
+    var s = Math.max(0, Math.round(ms / 1000));
+    var m = Math.floor(s / 60);
+    return m + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  // ── rendering ──────────────────────────────────────────────
+  function build() {
+    gridEl.textContent = '';
+
+    var list = model.hasRoster ? model.working : model.barbers;
+    if (!list.length) {
+      var e = document.createElement('div');
+      e.className = 'empty';
+      e.textContent = 'No barbers to show yet. Set the weekly roster first.';
+      gridEl.appendChild(e);
+      return;
+    }
+
+    var onToday = {};
+    model.working.forEach(function (w) { onToday[w.key] = true; });
+
+    list.forEach(function (b) {
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.barber = b.key;
+
+      var name = document.createElement('div');
+      name.className = 'cname';
+      name.textContent = b.name;
+
+      var state = document.createElement('div');
+      state.className = 'cstate';
+
+      var count = document.createElement('div');
+      count.className = 'countdown';
+
+      var bar = document.createElement('div');
+      bar.className = 'bar';
+      var fill = document.createElement('i');
+      bar.appendChild(fill);
+
+      var hrs = document.createElement('div');
+      hrs.className = 'hrs';
+      if (b.hours) hrs.textContent = b.hours.start + '–' + b.hours.end;
+
+      var btns = document.createElement('div');
+      btns.className = 'btns';
+
+      card.appendChild(name);
+      card.appendChild(state);
+      card.appendChild(count);
+      card.appendChild(bar);
+      if (b.hours) card.appendChild(hrs);
+      card.appendChild(btns);
+
+      card._els = { state: state, count: count, bar: bar, fill: fill, btns: btns, onToday: !!onToday[b.key] };
+      gridEl.appendChild(card);
+    });
+
+    paint();
+  }
+
+  // Redraws only the volatile parts, so the countdown can tick every second
+  // without rebuilding (and losing) the buttons under someone's finger.
+  function paint() {
+    Array.prototype.forEach.call(gridEl.querySelectorAll('.card'), function (card) {
+      var key = card.dataset.barber;
+      var els = card._els;
+      var blk = model.busy[key];
+      var left = blk ? blk.until - now() : 0;
+
+      if (blk && left > 0) {
+        card.className = 'card busy';
+        els.state.textContent = 'With a walk-in';
+        els.count.textContent = mmss(left);
+        els.bar.style.display = '';
+        var total = blk.total || left;
+        els.fill.style.width = Math.max(0, Math.min(100, (left / total) * 100)) + '%';
+        if (!els.btns.dataset.mode || els.btns.dataset.mode !== 'busy') {
+          els.btns.dataset.mode = 'busy';
+          els.btns.textContent = '';
+          var free = document.createElement('button');
+          free.className = 'free';
+          free.type = 'button';
+          free.textContent = 'Done — free now';
+          free.addEventListener('click', function () { send(key, null, free); });
+          els.btns.appendChild(free);
+        }
+      } else {
+        card.className = 'card ' + (els.onToday || !model.hasRoster ? 'free' : 'off');
+        els.state.textContent = (els.onToday || !model.hasRoster) ? 'Open chair' : 'Not in today';
+        els.count.textContent = (els.onToday || !model.hasRoster) ? 'Free' : '—';
+        els.bar.style.display = 'none';
+        if (els.btns.dataset.mode !== 'free') {
+          els.btns.dataset.mode = 'free';
+          els.btns.textContent = '';
+          BLOCKS.forEach(function (m) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = m + 'm';
+            btn.setAttribute('aria-label', 'Block this chair for ' + m + ' minutes');
+            btn.addEventListener('click', function () { send(key, m, btn); });
+            els.btns.appendChild(btn);
+          });
+        }
+      }
+    });
+  }
+
+  // ── data ───────────────────────────────────────────────────
+  function refresh() {
+    Promise.all([
+      fetch('/api/roster', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+      fetch('/api/busy',   { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }),
+      fetch('/api/status', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+    ]).then(function (res) {
+      var roster = res[0], busy = res[1], status = res[2];
+
+      if (busy && typeof busy.serverTime === 'number') skew = busy.serverTime - Date.now();
+
+      if (roster) {
+        model.working   = roster.working || [];
+        model.barbers   = roster.barbers || [];
+        model.hasRoster = !!roster.hasRoster;
+        document.getElementById('dayName').textContent = roster.dayName || '';
+        document.getElementById('daySub').textContent  = model.hasRoster
+          ? model.working.length + ' on today'
+          : 'Roster not set — showing everyone';
+      }
+
+      if (busy) {
+        // keep the original span so the progress bar has something to divide by
+        var prev = model.busy;
+        var next = busy.busy || {};
+        Object.keys(next).forEach(function (k) {
+          next[k].total = (prev[k] && prev[k].total) || (next[k].until - now());
+        });
+        model.busy = next;
+      }
+
+      if (status) {
+        var el = document.getElementById('shopState');
+        if (!status.withinHours)      { el.className = 'shop closed'; el.textContent = 'Closed'; }
+        else if (!status.live)        { el.className = 'shop';        el.textContent = 'Walk-ins welcome'; }
+        else if (status.state === 'open')   { el.className = 'shop open';   el.textContent = 'No wait'; }
+        else if (status.state === 'closed') { el.className = 'shop closed'; el.textContent = 'No walk-ins'; }
+        else { el.className = 'shop wait'; el.textContent = '~' + status.waitMinutes + ' min wait'; }
+      }
+
+      build();
+    });
+  }
+
+  function send(key, minutes, btn) {
+    var t = token();
+    if (!t) { say('Enter the staff code on the Shop status page first', false); return; }
+    btn.disabled = true;
+    var body = minutes === null ? { barber: key, clear: true } : { barber: key, minutes: minutes };
+
+    fetch('/api/busy', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'authorization': 'Bearer ' + t },
+      body: JSON.stringify(body)
+    })
+      .then(function (r) {
+        var err;
+        if (r.status === 401) { err = new Error('Wrong staff code - nothing was saved'); err.handled = true; throw err; }
+        if (!r.ok) { err = new Error('Not saved - server error (' + r.status + ')'); err.handled = true; throw err; }
+        return r.json();
+      })
+      .then(function (d) {
+        // reset the bar span so the new block fills from 100%
+        model.busy = d.busy || {};
+        Object.keys(model.busy).forEach(function (k) { model.busy[k].total = model.busy[k].until - now(); });
+        say(minutes === null ? 'Chair is free' : 'Blocked for ' + minutes + ' min', true);
+        build();
+      })
+      .catch(function (e) { say(e && e.handled ? e.message : 'Not saved - ' + failureText(), false); })
+      .then(function () { btn.disabled = false; });
+  }
+
+  // Keep a wall tablet awake while the board is on screen. Best-effort only.
+  function keepAwake() {
+    if (!('wakeLock' in navigator)) return;
+    navigator.wakeLock.request('screen').catch(function () {});
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) { keepAwake(); refresh(); }
+  });
+
+  refresh();
+  keepAwake();
+  setInterval(refresh, REFRESH_MS);
+  setInterval(paint, 1000);
+})();
+</script>
+</body>
+</html>
